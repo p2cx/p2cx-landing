@@ -9,6 +9,26 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="../../css/p2cx.css" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="../../logo/p2cx-icon.svg">
+<style>
+  .cat-header{font-weight:700;font-size:.95rem;padding:.6rem 0 .4rem;border-bottom:2px solid var(--p2cx-gold);margin-bottom:.75rem;margin-top:1.5rem;color:var(--p2cx-text);}
+  .cat-header:first-of-type{margin-top:0;}
+  .proc-row{display:flex;align-items:center;gap:.75rem;padding:.5rem 0;flex-wrap:wrap;}
+  .proc-check{flex-shrink:0;}
+  .proc-name{flex:1;min-width:200px;font-size:.9rem;}
+  .proc-name small{display:block;color:var(--p2cx-muted);font-size:.8rem;}
+  .proc-inputs{display:flex;gap:.5rem;align-items:center;flex-shrink:0;}
+  .proc-inputs input{width:70px;text-align:center;font-size:.85rem;}
+  .proc-inputs .input-label{font-size:.75rem;color:var(--p2cx-muted);white-space:nowrap;}
+  .proc-row.disabled .proc-name{opacity:.4;}
+  .proc-row.disabled .proc-inputs input{opacity:.4;}
+  .result-card{border:2px solid var(--p2cx-gold);background:linear-gradient(135deg,#fff 0%,#faf5eb 100%);}
+  .result-number{font-size:2.5rem;font-weight:800;color:#b8923f;line-height:1.1;}
+  .result-detail{font-size:.85rem;color:var(--p2cx-muted);}
+  .settings-row{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;font-size:.85rem;}
+  .settings-row label{color:var(--p2cx-muted);white-space:nowrap;}
+  .settings-row input{width:80px;text-align:center;font-size:.85rem;}
+  @media(max-width:767px){.proc-row{flex-direction:column;align-items:flex-start;}.proc-inputs{width:100%;}}
+</style>
 </head>
 <body>
 
@@ -21,7 +41,7 @@
         <h6 class="mb-1">p2cx</h6>
         <span class="ms-2 small text-muted">Digitalisierungspartner für den Mittelstand</span>
       </div>
-      <a href="#kontakt" class="btn btn-primary btn-p2cx btn-sm">Erstgespräch anfragen</a>
+      <a href="#rechner" class="btn btn-primary btn-p2cx btn-sm">Einsparung berechnen</a>
     </div>
   </div>
 </div>
@@ -38,7 +58,7 @@
             <h1 class="mb-2 mt-3 display-5">Digitalisierung für den Mittelstand. Von nebenan.</h1>
             <p class="text-muted mb-3 lead">p2cx hilft mittelständischen Unternehmen, <strong>eigene digitale Tools zu bauen</strong> — schneller, sicherer und nachhaltiger. Nicht als Softwarehaus das liefert und geht, sondern als <strong>Digitalisierungspartner mit laufender Begleitung</strong>.</p>
             <div class="d-flex gap-2 flex-wrap">
-              <a href="#kontakt" class="btn btn-primary btn-p2cx">Kostenloses Erstgespräch</a>
+              <a href="#rechner" class="btn btn-primary btn-p2cx">Einsparung berechnen</a>
               <a href="#loesung" class="btn btn-outline-secondary">So funktioniert's</a>
             </div>
           </div>
@@ -219,15 +239,147 @@
     </div>
   </section>
 
+  <!-- Einsparungsrechner -->
+  <section id="rechner" class="py-3">
+    <div class="container">
+      <div class="p2cx-card"><div class="p2cx-body">
+        <h2 class="mb-2">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="9"/><path d="M9 15l6-6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/></svg></span>
+          Was kosten Sie Ihre Verwaltungsprozesse?
+        </h2>
+        <p class="text-muted">Wählen Sie die Prozesse aus, passen Sie Häufigkeit und Zeitaufwand an — der Rechner zeigt Ihr Einsparpotenzial.</p>
+
+        <!-- Einstellungen -->
+        <div class="p2cx-card p2cx-card-quiet mb-3"><div class="p2cx-body">
+          <div class="settings-row">
+            <label for="stundensatz">Stundensatz (EUR):</label>
+            <input id="stundensatz" type="number" class="form-control form-control-sm" value="45" min="1" max="200" onchange="calc()">
+            <label for="autoquote">Automatisierungsquote (%):</label>
+            <input id="autoquote" type="number" class="form-control form-control-sm" value="80" min="10" max="100" step="5" onchange="calc()">
+          </div>
+          <small class="text-muted mt-1 d-block">Personalkosten inkl. Nebenkosten. Quote = wieviel % des manuellen Aufwands entfallen.</small>
+        </div></div>
+
+        <!-- Prozesse -->
+        <div class="cat-header"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M3 9h6"/></svg></span> Allgemein</div>
+
+        <div class="proc-row" data-key="doku-kat">
+          <div class="proc-check"><input type="checkbox" class="form-check-input" checked onchange="toggleRow(this);calc()"></div>
+          <div class="proc-name"><strong>Dokumentenkategorisierung</strong><small>Eingehende Dokumente sichten, klassifizieren und ablegen</small></div>
+          <div class="proc-inputs">
+            <div><span class="input-label">pro Monat</span><input type="number" class="form-control form-control-sm freq" value="200" min="0" onchange="calc()"></div>
+            <div><span class="input-label">Min/Vorgang</span><input type="number" class="form-control form-control-sm mins" value="5" min="1" onchange="calc()"></div>
+          </div>
+        </div>
+
+        <div class="proc-row" data-key="vertrag">
+          <div class="proc-check"><input type="checkbox" class="form-check-input" checked onchange="toggleRow(this);calc()"></div>
+          <div class="proc-name"><strong>Vertragsdaten erfassen</strong><small>Laufzeiten, Konditionen und Fristen extrahieren und pflegen</small></div>
+          <div class="proc-inputs">
+            <div><span class="input-label">pro Monat</span><input type="number" class="form-control form-control-sm freq" value="15" min="0" onchange="calc()"></div>
+            <div><span class="input-label">Min/Vorgang</span><input type="number" class="form-control form-control-sm mins" value="20" min="1" onchange="calc()"></div>
+          </div>
+        </div>
+
+        <div class="cat-header"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11l-5 5-2.5-2.5"/></svg></span> Vertrieb</div>
+
+        <div class="proc-row" data-key="ausschreibung">
+          <div class="proc-check"><input type="checkbox" class="form-check-input" checked onchange="toggleRow(this);calc()"></div>
+          <div class="proc-name"><strong>Ausschreibungen / Verkaufsunterlagen</strong><small>Sichten, relevante Anforderungen extrahieren, aufbereiten</small></div>
+          <div class="proc-inputs">
+            <div><span class="input-label">pro Monat</span><input type="number" class="form-control form-control-sm freq" value="10" min="0" onchange="calc()"></div>
+            <div><span class="input-label">Min/Vorgang</span><input type="number" class="form-control form-control-sm mins" value="30" min="1" onchange="calc()"></div>
+          </div>
+        </div>
+
+        <div class="proc-row" data-key="crm">
+          <div class="proc-check"><input type="checkbox" class="form-check-input" onchange="toggleRow(this);calc()"></div>
+          <div class="proc-name"><strong>CRM-Datenpflege</strong><small>Kundendaten, Kontakthistorie und Aktivitäten manuell pflegen</small></div>
+          <div class="proc-inputs">
+            <div><span class="input-label">pro Monat</span><input type="number" class="form-control form-control-sm freq" value="80" min="0" onchange="calc()"></div>
+            <div><span class="input-label">Min/Vorgang</span><input type="number" class="form-control form-control-sm mins" value="5" min="1" onchange="calc()"></div>
+          </div>
+        </div>
+
+        <div class="cat-header"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="9"/><path d="M9 15l6-6"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="15" r="1"/></svg></span> Finance</div>
+
+        <div class="proc-row" data-key="re-eingang">
+          <div class="proc-check"><input type="checkbox" class="form-check-input" checked onchange="toggleRow(this);calc()"></div>
+          <div class="proc-name"><strong>Rechnungseingang</strong><small>Erfassen, Kreditor zuordnen, Aufwandskonto vorkontieren</small></div>
+          <div class="proc-inputs">
+            <div><span class="input-label">pro Monat</span><input type="number" class="form-control form-control-sm freq" value="100" min="0" onchange="calc()"></div>
+            <div><span class="input-label">Min/Vorgang</span><input type="number" class="form-control form-control-sm mins" value="8" min="1" onchange="calc()"></div>
+          </div>
+        </div>
+
+        <div class="proc-row" data-key="re-ausgang">
+          <div class="proc-check"><input type="checkbox" class="form-check-input" checked onchange="toggleRow(this);calc()"></div>
+          <div class="proc-name"><strong>Rechnungsausgang</strong><small>Erstellen, Debitor zuordnen, Erlöskonto vorkontieren</small></div>
+          <div class="proc-inputs">
+            <div><span class="input-label">pro Monat</span><input type="number" class="form-control form-control-sm freq" value="80" min="0" onchange="calc()"></div>
+            <div><span class="input-label">Min/Vorgang</span><input type="number" class="form-control form-control-sm mins" value="10" min="1" onchange="calc()"></div>
+          </div>
+        </div>
+
+        <div class="cat-header"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span> Einkauf</div>
+
+        <div class="proc-row" data-key="ab-abgleich">
+          <div class="proc-check"><input type="checkbox" class="form-check-input" checked onchange="toggleRow(this);calc()"></div>
+          <div class="proc-name"><strong>Auftragsbestätigungsabgleich</strong><small>AB mit Bestellungen vergleichen — Preise, Mengen, Liefertermine</small></div>
+          <div class="proc-inputs">
+            <div><span class="input-label">pro Monat</span><input type="number" class="form-control form-control-sm freq" value="50" min="0" onchange="calc()"></div>
+            <div><span class="input-label">Min/Vorgang</span><input type="number" class="form-control form-control-sm mins" value="12" min="1" onchange="calc()"></div>
+          </div>
+        </div>
+
+        <div class="cat-header"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span> Compliance</div>
+
+        <div class="proc-row" data-key="eu-radar">
+          <div class="proc-check"><input type="checkbox" class="form-check-input" onchange="toggleRow(this);calc()"></div>
+          <div class="proc-name"><strong>EU-Regulierungen überwachen</strong><small>Relevante Verordnungen identifizieren, bewerten, Maßnahmen ableiten</small></div>
+          <div class="proc-inputs">
+            <div><span class="input-label">pro Monat</span><input type="number" class="form-control form-control-sm freq" value="4" min="0" onchange="calc()"></div>
+            <div><span class="input-label">Min/Vorgang</span><input type="number" class="form-control form-control-sm mins" value="60" min="1" onchange="calc()"></div>
+          </div>
+        </div>
+
+        <!-- Ergebnis -->
+        <div class="p2cx-card result-card mt-4"><div class="p2cx-body p-4">
+          <div class="row g-4 align-items-center">
+            <div class="col-md-4 text-center">
+              <div class="text-muted" style="font-size:.85rem;font-weight:600;">Monatliches Einsparpotenzial</div>
+              <div class="result-number" id="resultEur">0 EUR</div>
+              <div class="result-detail" id="resultHours">0 Stunden / Monat</div>
+            </div>
+            <div class="col-md-4 text-center">
+              <div class="text-muted" style="font-size:.85rem;font-weight:600;">Jährliches Einsparpotenzial</div>
+              <div class="result-number" id="resultYear" style="font-size:2rem;">0 EUR</div>
+              <div class="result-detail" id="resultDays">0 Arbeitstage / Jahr</div>
+            </div>
+            <div class="col-md-4">
+              <a href="#kontakt" class="btn btn-primary btn-p2cx w-100 mb-2">Ergebnis besprechen</a>
+              <span class="smallmuted d-block text-center">Kostenlos und unverbindlich</span>
+            </div>
+          </div>
+          <div class="p2cx-card mt-3 p2cx-card-quiet"><div class="p2cx-body">
+            <strong>Aufschlüsselung:</strong>
+            <div id="breakdown" class="mt-2" style="font-size:.85rem;color:var(--p2cx-muted);"></div>
+          </div></div>
+        </div></div>
+
+      </div></div>
+    </div>
+  </section>
+
   <!-- Kontakt -->
   <section id="kontakt" class="py-3">
     <div class="container">
       <div class="p2cx-card"><div class="p2cx-body">
         <h2 class="mb-2">
           <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="4" width="18" height="15" rx="2"/><path d="M3 9h18"/><path d="M15 13l5 2-5 2"/><path d="M8 17h4"/></svg></span>
-          Kostenloses Erstgespräch
+          Ergebnis besprechen
         </h2>
-        <p class="text-muted">30 Minuten — unverbindlich, persönlich, konkret. Wir schauen gemeinsam, ob und wie p2cx Ihnen helfen kann.</p>
+        <p class="text-muted">Wir besprechen Ihr Ergebnis persönlich und zeigen, welche Prozesse sich am schnellsten digitalisieren lassen.</p>
 
         <form class="p2cx-card mt-2" id="leadForm" onsubmit="return sendLead(event)">
           <div class="p2cx-body">
@@ -298,19 +450,58 @@
 </div>
 
 <script>
+function toggleRow(cb){
+  const row = cb.closest('.proc-row');
+  row.classList.toggle('disabled', !cb.checked);
+  row.querySelectorAll('input[type=number]').forEach(i => i.disabled = !cb.checked);
+}
+
+function calc(){
+  const stundensatz = parseFloat(document.getElementById('stundensatz').value) || 45;
+  const autoquote = (parseFloat(document.getElementById('autoquote').value) || 80) / 100;
+  const rows = document.querySelectorAll('.proc-row');
+  let totalMin = 0;
+  let breakdownHtml = '';
+  rows.forEach(row => {
+    const cb = row.querySelector('.form-check-input');
+    if(!cb.checked) return;
+    const name = row.querySelector('strong').textContent;
+    const freq = parseFloat(row.querySelector('.freq').value) || 0;
+    const mins = parseFloat(row.querySelector('.mins').value) || 0;
+    const rowMin = freq * mins * autoquote;
+    totalMin += rowMin;
+    if(rowMin > 0){
+      const rowEur = (rowMin / 60) * stundensatz;
+      breakdownHtml += '<div class="d-flex justify-content-between py-1" style="border-bottom:1px solid #f3f4f6;"><span>' + name + ' <small class="text-muted">(' + freq + 'x · ' + mins + ' Min · ' + Math.round(autoquote*100) + '%)</small></span><strong>' + Math.round(rowEur).toLocaleString('de-DE') + ' EUR</strong></div>';
+    }
+  });
+  const totalHours = totalMin / 60;
+  const totalEur = totalHours * stundensatz;
+  document.getElementById('resultEur').textContent = Math.round(totalEur).toLocaleString('de-DE') + ' EUR';
+  document.getElementById('resultHours').textContent = Math.round(totalHours) + ' Stunden / Monat';
+  document.getElementById('resultYear').textContent = Math.round(totalEur * 12).toLocaleString('de-DE') + ' EUR';
+  document.getElementById('resultDays').textContent = Math.round((totalHours * 12) / 8) + ' Arbeitstage / Jahr';
+  document.getElementById('breakdown').innerHTML = breakdownHtml || '<span>Keine Prozesse ausgewählt.</span>';
+}
+
+function getConfig(){
+  const rows = document.querySelectorAll('.proc-row');
+  const procs = [];
+  rows.forEach(row => {
+    const cb = row.querySelector('.form-check-input');
+    if(!cb.checked) return;
+    procs.push({key:row.dataset.key, name:row.querySelector('strong').textContent, freq:parseFloat(row.querySelector('.freq').value)||0, mins:parseFloat(row.querySelector('.mins').value)||0});
+  });
+  return {stundensatz:parseFloat(document.getElementById('stundensatz').value)||45, autoquote:parseFloat(document.getElementById('autoquote').value)||80, processes:procs, resultMonthly:document.getElementById('resultEur').textContent, resultYearly:document.getElementById('resultYear').textContent};
+}
+
 async function sendLead(e){
   e.preventDefault();
   const form = e.target;
-
-  // Honeypot
   if(document.getElementById('hp')?.value) return false;
-
   const btn = form.querySelector('button[type="submit"]');
   if(btn) btn.disabled = true;
-
-  // UTM-Parameter aus URL
   const params = new URLSearchParams(window.location.search);
-
   const payload = {
     name: document.getElementById('name').value.trim(),
     email: document.getElementById('mail').value.trim(),
@@ -319,36 +510,27 @@ async function sendLead(e){
     mitarbeiter: document.getElementById('mitarbeiter').value,
     situation: document.getElementById('situation').value,
     message: document.getElementById('msg').value.trim(),
+    konfigurator: getConfig(),
     utm_source: params.get('utm_source') || '',
     utm_medium: params.get('utm_medium') || '',
     utm_campaign: params.get('utm_campaign') || '',
     utm_content: params.get('utm_content') || '',
-    page: location.pathname,
-    lang: 'de',
-    ts: new Date().toISOString()
+    page: location.pathname, lang: 'de', ts: new Date().toISOString()
   };
-
   const FUNCTION_URL = 'https://prod-02.germanywestcentral.logic.azure.com:443/workflows/25ca0e47a6164ad79b3364698f13740e/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=DJlZD_qMRReJpH4_FbYw2ZoLTtE2HRNAlCuxCSuYKkg';
-
   try{
-    const res = await fetch(FUNCTION_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    });
-    if(res.ok){
-      alert('Danke! Wir melden uns zeitnah.');
-      form.reset();
-    } else {
-      alert('Das hat leider nicht geklappt. Bitte direkt mailen an hello@p2cx.de');
-    }
-  }catch(err){
-    alert('Netzwerkfehler. Bitte direkt mailen an hello@p2cx.de');
-  }finally{
-    if(btn) btn.disabled = false;
-  }
+    const res = await fetch(FUNCTION_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(res.ok){alert('Danke! Wir melden uns mit einer detaillierten Analyse.');form.reset();}
+    else{alert('Das hat leider nicht geklappt. Bitte direkt mailen an hello@p2cx.de');}
+  }catch(err){alert('Netzwerkfehler. Bitte direkt mailen an hello@p2cx.de');}
+  finally{if(btn) btn.disabled = false;}
   return false;
 }
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.proc-row').forEach(row => toggleRow(row.querySelector('.form-check-input')));
+  calc();
+});
 </script>
 </body>
 </html>
