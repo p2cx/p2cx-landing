@@ -5,321 +5,267 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>p2cx — Digitalisierung für den Mittelstand in Lübeck</title>
 <meta name="description" content="Ihr lokaler Digitalisierungspartner in Lübeck. p2cx hilft mittelständischen Unternehmen, eigene digitale Tools zu bauen — schneller, sicherer und nachhaltiger.">
+<meta name="theme-color" content="#c9a44c">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --p2cx-gold:#c9a44c;
-    --p2cx-gold-dark:#b8923f;
-    --p2cx-gold-soft:#faf5eb;
-    --p2cx-text:#1f2937;
-    --p2cx-muted:#6b7280;
-    --p2cx-border:#e5e7eb;
-    --p2cx-shadow:0 4px 12px rgba(2,6,23,.08);
-    --p2cx-shadow-hover:0 8px 24px rgba(2,6,23,.12);
-    --p2cx-radius:12px;
-    --p2cx-bg:#f8fafc;
-  }
-  html{scroll-behavior:smooth;}
-  html,body{background:var(--p2cx-bg);color:var(--p2cx-text);font-family:'Inter',-apple-system,system-ui,sans-serif;}
-  h1,h2,h3,h4,h5{letter-spacing:-0.02em;}
-
-  /* Nav */
-  .nav-p2cx{position:sticky;top:0;z-index:50;background:rgba(248,250,252,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--p2cx-border);}
-  .nav-p2cx .brand{font-weight:800;font-size:1.15rem;letter-spacing:-0.02em;text-decoration:none;color:var(--p2cx-text);}
-  .nav-p2cx .brand span{color:var(--p2cx-gold);}
-  .nav-p2cx .btn-cta-nav{background:var(--p2cx-gold);color:#fff;border:none;border-radius:999px;padding:.4rem 1.2rem;font-size:.85rem;font-weight:600;transition:background .2s;}
-  .nav-p2cx .btn-cta-nav:hover{background:var(--p2cx-gold-dark);color:#fff;}
-
-  /* Hero */
-  .hero{padding:5rem 0 3.5rem;position:relative;overflow:hidden;}
-  .hero::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(201,164,76,.12) 0%,transparent 70%);border-radius:50%;pointer-events:none;}
-  .hero h1{font-size:2.6rem;font-weight:800;line-height:1.15;}
-  .hero h1 span{color:var(--p2cx-gold);}
-  .hero .lead{font-size:1.15rem;color:var(--p2cx-muted);max-width:680px;}
-  .hero .local-badge{display:inline-block;background:var(--p2cx-gold-soft);color:var(--p2cx-gold-dark);font-weight:600;font-size:.85rem;padding:.4rem 1rem;border-radius:999px;margin-bottom:1.25rem;}
-
-  /* CTA Button */
-  .btn-cta{background:var(--p2cx-gold);color:#fff;border:none;border-radius:var(--p2cx-radius);padding:.85rem 2rem;font-size:1rem;font-weight:700;transition:all .2s;box-shadow:0 4px 16px rgba(201,164,76,.25);}
-  .btn-cta:hover{background:var(--p2cx-gold-dark);color:#fff;transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,164,76,.35);}
-
-  /* Sections */
-  .section{padding:4rem 0;}
-  .section-alt{background:var(--p2cx-gold-soft);}
-  .section-title{font-size:1.65rem;font-weight:700;margin-bottom:.35rem;}
-  .section-subtitle{color:var(--p2cx-muted);margin-bottom:2rem;font-size:1rem;}
-
-  /* Cards */
-  .p2cx-card{background:#fff;border:1px solid var(--p2cx-border);border-radius:var(--p2cx-radius);padding:1.5rem;box-shadow:var(--p2cx-shadow);transition:box-shadow .2s,transform .2s;}
-  .p2cx-card:hover{box-shadow:var(--p2cx-shadow-hover);transform:translateY(-2px);}
-  .p2cx-card h5{font-weight:700;font-size:1rem;margin-bottom:.5rem;}
-  .p2cx-card p{color:var(--p2cx-muted);font-size:.9rem;margin-bottom:0;}
-  .p2cx-card .icon{font-size:1.8rem;margin-bottom:.75rem;display:block;}
-
-  /* Tables */
-  .table-p2cx{background:#fff;border-radius:var(--p2cx-radius);overflow:hidden;box-shadow:var(--p2cx-shadow);border:1px solid var(--p2cx-border);}
-  .table-p2cx thead{background:var(--p2cx-gold);color:#fff;}
-  .table-p2cx thead th{font-weight:600;font-size:.85rem;border:none;padding:.75rem 1rem;}
-  .table-p2cx tbody td{font-size:.88rem;vertical-align:middle;border-color:var(--p2cx-border);padding:.7rem 1rem;}
-  .table-p2cx tbody tr:last-child td{border-bottom:none;}
-  .table-p2cx tbody tr:hover{background:var(--p2cx-gold-soft);}
-
-  /* Quote */
-  .p2cx-quote{border-left:4px solid var(--p2cx-gold);background:#fff;padding:1.25rem 1.5rem;border-radius:0 var(--p2cx-radius) var(--p2cx-radius) 0;box-shadow:var(--p2cx-shadow);font-style:italic;color:var(--p2cx-text);font-size:.95rem;margin:1.5rem 0;}
-
-  /* Gold hr */
-  .hr-gold{border:none;height:3px;background:linear-gradient(90deg,var(--p2cx-gold),transparent);margin:3rem 0;}
-
-  /* Contact form */
-  .contact-form{background:#fff;border:2px solid var(--p2cx-gold);border-radius:var(--p2cx-radius);padding:2rem;box-shadow:var(--p2cx-shadow-hover);}
-  .contact-form input,.contact-form textarea,.contact-form select{border:1px solid var(--p2cx-border);border-radius:8px;padding:.65rem 1rem;font-size:.9rem;width:100%;font-family:inherit;}
-  .contact-form input:focus,.contact-form textarea:focus,.contact-form select:focus{outline:none;border-color:var(--p2cx-gold);box-shadow:0 0 0 3px rgba(201,164,76,.15);}
-  .contact-form label{font-weight:600;font-size:.85rem;margin-bottom:.35rem;display:block;color:var(--p2cx-text);}
-
-  /* Footer */
-  .footer-p2cx{background:var(--p2cx-text);color:rgba(255,255,255,.6);padding:2.5rem 0;font-size:.85rem;}
-  .footer-p2cx strong{color:#fff;}
-  .footer-p2cx .gold{color:var(--p2cx-gold);}
-  .footer-p2cx a{color:rgba(255,255,255,.6);text-decoration:underline;}
-  .footer-p2cx a:hover{color:#fff;}
-
-  /* Responsive */
-  @media(max-width:767px){
-    .hero h1{font-size:1.8rem;}
-    .section{padding:2.5rem 0;}
-  }
-</style>
+<link href="../../css/p2cx.css" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="../../logo/p2cx-icon.svg">
 </head>
 <body>
 
-<!-- Navigation -->
-<nav class="nav-p2cx">
-  <div class="container d-flex align-items-center justify-content-between py-2">
-    <a href="#top" class="brand">p2<span>cx</span></a>
-    <a class="btn-cta-nav" href="#kontakt">Erstgespräch vereinbaren</a>
-  </div>
-</nav>
-
-<!-- Hero -->
-<header class="hero" id="top">
-  <div class="container">
-    <div class="local-badge">Ihr Partner in Lübeck und Umgebung</div>
-    <h1>Digitalisierung für den <span>Mittelstand</span> — von nebenan.</h1>
-    <p class="lead mt-3">p2cx hilft mittelständischen Unternehmen in der Region Lübeck, <strong>eigene digitale Tools zu bauen</strong> — schneller, sicherer und nachhaltiger als sie es alleine könnten. Nicht als Softwarehaus das liefert und geht, sondern als <strong>Digitalisierungspartner mit laufender Begleitung</strong>.</p>
-    <a href="#kontakt" class="btn-cta mt-4 d-inline-block">Kostenloses Erstgespräch buchen</a>
-  </div>
-</header>
-
-<div class="hr-gold container"></div>
-
-<!-- Problem -->
-<section class="section" id="problem">
-  <div class="container">
-    <h2 class="section-title">Das kennen Sie</h2>
-    <p class="section-subtitle">Typische Situationen im Mittelstand</p>
-    <div class="row g-4">
-      <div class="col-md-6 col-lg-4">
-        <div class="p2cx-card h-100">
-          <span class="icon">📋</span>
-          <h5>Excel überall</h5>
-          <p>Aufträge, Projekte, Kundendaten — alles in Excel. Keiner hat den Überblick, Fehler sind vorprogrammiert.</p>
-        </div>
+<!-- Header -->
+<div class="container py-2">
+  <div class="p2cx-card p2cx-card-quiet">
+    <div class="p2cx-body d-flex align-items-center justify-content-between py-2">
+      <div class="d-flex align-items-center gap-2">
+        <img src="../../logo/p2cx-icon.svg" alt="p2cx Icon" height="28">
+        <h6 class="mb-1">p2cx</h6>
+        <span class="ms-2 small text-muted">Digitalisierungspartner für den Mittelstand</span>
       </div>
-      <div class="col-md-6 col-lg-4">
-        <div class="p2cx-card h-100">
-          <span class="icon">🔒</span>
-          <h5>Abhängig vom IT-Dienstleister</h5>
-          <p>Software kommt von außen, keiner im Haus versteht sie. Änderungen dauern Wochen und kosten viel.</p>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-4">
-        <div class="p2cx-card h-100">
-          <span class="icon">🚌</span>
-          <h5>Bus-Faktor 1</h5>
-          <p>Eine Person weiß alles über die IT. Urlaub, Krankheit oder Kündigung = Stillstand.</p>
+      <a href="#kontakt" class="btn btn-primary btn-p2cx btn-sm">Erstgespräch anfragen</a>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- Hero -->
+  <section class="py-3">
+    <div class="container">
+      <div class="p2cx-card p-4 p-md-5">
+        <div class="row g-4 align-items-center">
+          <div class="col-lg-7">
+            <div class="chip">Lübeck und Umgebung</div>
+            <h1 class="mb-2 mt-3 display-5">Digitalisierung für den Mittelstand. Von nebenan.</h1>
+            <p class="text-muted mb-3 lead">p2cx hilft mittelständischen Unternehmen, <strong>eigene digitale Tools zu bauen</strong> — schneller, sicherer und nachhaltiger. Nicht als Softwarehaus das liefert und geht, sondern als <strong>Digitalisierungspartner mit laufender Begleitung</strong>.</p>
+            <div class="d-flex gap-2 flex-wrap">
+              <a href="#kontakt" class="btn btn-primary btn-p2cx">Kostenloses Erstgespräch</a>
+              <a href="#loesung" class="btn btn-outline-secondary">So funktioniert's</a>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <aside class="p2cx-card p2cx-card-quiet">
+              <div class="p2cx-body">
+                <div class="chip">Enablement statt Abhängigkeit</div>
+                <p class="mt-2 mb-1"><strong>Unser Ansatz in einem Satz</strong></p>
+                <p class="text-muted mb-0">Wie ein Fitnessstudio mit Personal Trainer: Sie könnten auch alleine trainieren. Aber mit Trainer, Geräten und Programm werden Sie schneller besser. Sie zahlen nicht für die Hanteln — Sie zahlen für den Fortschritt.</p>
+              </div>
+            </aside>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Lösung -->
-<section class="section section-alt" id="loesung">
-  <div class="container">
-    <h2 class="section-title">Unsere Lösung: Enablement statt Abhängigkeit</h2>
-    <p class="section-subtitle">Wir bauen nicht für Sie — wir bauen mit Ihnen. Und befähigen Ihr Team, selbst weiterzumachen.</p>
-    <div class="row g-4">
-      <div class="col-md-6">
-        <div class="p2cx-card h-100">
-          <h5>1. Kickstart-Projekt</h5>
-          <p style="color:var(--p2cx-text);">Wir schauen gemeinsam: Wo stehen Sie? Welche 3-5 digitalen Tools würden den größten Unterschied machen? Dann bauen wir die ersten Apps als Proof-of-Concept — auf Ihrer Infrastruktur, mit Ihren Daten.</p>
+  <!-- Problem -->
+  <section class="py-3">
+    <div class="container">
+      <div class="p2cx-card"><div class="p2cx-body">
+        <h2 class="mb-3">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h0"/></svg></span>
+          Das kennen Sie
+        </h2>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <strong>Excel überall</strong><br>
+              <span class="text-muted">Aufträge, Projekte, Kundendaten — alles in Excel. Keiner hat den Überblick, Fehler sind vorprogrammiert.</span>
+            </div></div>
+          </div>
+          <div class="col-md-4">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <strong>Abhängig vom Dienstleister</strong><br>
+              <span class="text-muted">Software kommt von außen, keiner im Haus versteht sie. Änderungen dauern Wochen und kosten viel.</span>
+            </div></div>
+          </div>
+          <div class="col-md-4">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <strong>Bus-Faktor 1</strong><br>
+              <span class="text-muted">Eine Person weiß alles über die IT. Urlaub, Krankheit oder Kündigung = Stillstand.</span>
+            </div></div>
+          </div>
         </div>
-      </div>
-      <div class="col-md-6">
-        <div class="p2cx-card h-100">
-          <h5>2. Laufende Begleitung (Enablement-Abo)</h5>
-          <p style="color:var(--p2cx-text);">Danach begleiten wir Sie monatlich: Sparring, Code Reviews, Workshops, Qualitätssicherung. Ihr Team lernt, selbst Apps zu bauen und zu betreiben. Sie werden unabhängiger — nicht abhängiger.</p>
-        </div>
-      </div>
+      </div></div>
     </div>
-    <div class="p2cx-quote mt-4">
-      <strong>Wie ein Fitnessstudio mit Personal Trainer:</strong> Sie könnten auch alleine trainieren. Aber mit Trainer, Geräten und Programm werden Sie schneller besser. Sie zahlen nicht für die Hanteln — Sie zahlen für den Fortschritt.
+  </section>
+
+  <!-- Lösung -->
+  <section id="loesung" class="py-3">
+    <div class="container">
+      <div class="p2cx-card"><div class="p2cx-body">
+        <h2 class="mb-3">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="M4.93 4.93l2.83 2.83"/><path d="M16.24 16.24l2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/></svg></span>
+          Enablement statt Abhängigkeit
+        </h2>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <strong>1. Kickstart-Projekt</strong><br>
+              <span class="text-muted">Wo stehen Sie? Welche 3–5 digitalen Tools würden den größten Unterschied machen? Wir bauen die ersten Apps als Proof-of-Concept — auf Ihrer Infrastruktur, mit Ihren Daten.</span>
+            </div></div>
+          </div>
+          <div class="col-md-6">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <strong>2. Laufende Begleitung</strong><br>
+              <span class="text-muted">Sparring, Code Reviews, Workshops, Qualitätssicherung. Ihr Team lernt, selbst Apps zu bauen und zu betreiben. Sie werden unabhängiger — nicht abhängiger.</span>
+            </div></div>
+          </div>
+        </div>
+        <div class="p2cx-card mt-3 p2cx-card-quiet"><div class="p2cx-body">
+          <strong>Das Ergebnis nach 12 Monaten:</strong>
+          <span class="text-muted">Nicht 1 App die ein Dienstleister gebaut hat — sondern 5 Apps die IHR Team versteht und selbst weiterentwickelt.</span>
+        </div></div>
+      </div></div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Pakete -->
-<section class="section" id="pakete">
-  <div class="container">
-    <h2 class="section-title">Drei Pakete — passend zu Ihrer Situation</h2>
-    <p class="section-subtitle">Nicht jedes Unternehmen braucht das Gleiche. Wir passen uns an.</p>
-
-    <div class="table-responsive mb-4">
-      <table class="table table-p2cx mb-0">
-        <thead>
-          <tr><th>Baustein</th><th>Starter</th><th>Growth</th><th>Scale</th></tr>
-        </thead>
-        <tbody>
-          <tr><td><strong>Monatliche Rate</strong></td><td>1.500 EUR</td><td>3.000 EUR</td><td>5.000 EUR</td></tr>
-          <tr><td><strong>Sparring-Stunden</strong></td><td>2h / Monat</td><td>4h / Monat</td><td>8h / Monat</td></tr>
-          <tr><td><strong>Code Reviews</strong></td><td>Vor jedem Go-Live</td><td>Vor jedem Go-Live</td><td>Laufend</td></tr>
-          <tr><td><strong>Workshops</strong></td><td>1x / Halbjahr</td><td>1x / Quartal</td><td>1x / Monat</td></tr>
-          <tr><td><strong>Notfall-Support</strong></td><td>Best Effort</td><td>24h Reaktion</td><td>4h Reaktion</td></tr>
-          <tr><td><strong>Neue App-Templates</strong></td><td>Zugang</td><td>+ Anpassung</td><td>+ Co-Development</td></tr>
-        </tbody>
-      </table>
+  <!-- Kundentypen -->
+  <section class="py-3">
+    <div class="container">
+      <div class="p2cx-card"><div class="p2cx-body">
+        <h2 class="mb-3">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+          Drei Situationen — ein Modell
+        </h2>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <div class="chip">Typ A</div>
+              <p class="mt-2 mb-1"><strong>Keine eigene IT</strong></p>
+              <span class="text-muted">50–200 Mitarbeiter, kein IT-Team. Wir übernehmen alles und bringen Ihrem Fachbereich bei, gute Anforderungen zu stellen.</span>
+            </div></div>
+          </div>
+          <div class="col-md-4">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <div class="chip">Typ B</div>
+              <p class="mt-2 mb-1"><strong>IT-Dienstleister vorhanden</strong></p>
+              <span class="text-muted">Ihr IT-Dienstleister betreibt die Server, wir kümmern uns um die Apps. In 12 Monaten baut Ihr Team die vierte App ohne uns.</span>
+            </div></div>
+          </div>
+          <div class="col-md-4">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <div class="chip">Typ C</div>
+              <p class="mt-2 mb-1"><strong>Eigene IT-Abteilung</strong></p>
+              <span class="text-muted">Sie haben Leute und Infrastruktur. Was fehlt: ein bewährtes Framework und ein Sparringspartner der das schon 10x gemacht hat.</span>
+            </div></div>
+          </div>
+        </div>
+      </div></div>
     </div>
+  </section>
 
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="p2cx-card h-100">
-          <h5 style="color:var(--p2cx-gold-dark);">Typ A: Keine eigene IT</h5>
-          <p style="color:var(--p2cx-text);">50-200 Mitarbeiter, kein IT-Team. Wir übernehmen alles und bringen Ihrem Fachbereich bei, gute Anforderungen zu stellen.</p>
+  <!-- Pakete -->
+  <section class="py-3">
+    <div class="container">
+      <div class="p2cx-card"><div class="p2cx-body">
+        <h2 class="mb-3">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span>
+          Enablement-Abo
+        </h2>
+        <div class="table-responsive">
+          <table class="table table-sm mb-0">
+            <thead><tr class="text-muted"><th>Baustein</th><th>Starter</th><th>Growth</th><th>Scale</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Monatliche Rate</strong></td><td>1.500 EUR</td><td>3.000 EUR</td><td>5.000 EUR</td></tr>
+              <tr><td><strong>Sparring</strong></td><td>2h / Monat</td><td>4h / Monat</td><td>8h / Monat</td></tr>
+              <tr><td><strong>Code Reviews</strong></td><td>Vor Go-Live</td><td>Vor Go-Live</td><td>Laufend</td></tr>
+              <tr><td><strong>Workshops</strong></td><td>1x / Halbjahr</td><td>1x / Quartal</td><td>1x / Monat</td></tr>
+              <tr><td><strong>Notfall-Support</strong></td><td>Best Effort</td><td>24h Reaktion</td><td>4h Reaktion</td></tr>
+              <tr><td><strong>App-Templates</strong></td><td>Zugang</td><td>+ Anpassung</td><td>+ Co-Development</td></tr>
+            </tbody>
+          </table>
         </div>
-      </div>
-      <div class="col-md-4">
-        <div class="p2cx-card h-100">
-          <h5 style="color:var(--p2cx-gold-dark);">Typ B: IT-Dienstleister vorhanden</h5>
-          <p style="color:var(--p2cx-text);">Ihr IT-Dienstleister betreibt die Server, wir kümmern uns um die Apps. In 12 Monaten baut Ihr Team die vierte App ohne uns.</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="p2cx-card h-100">
-          <h5 style="color:var(--p2cx-gold-dark);">Typ C: Eigene IT-Abteilung</h5>
-          <p style="color:var(--p2cx-text);">Sie haben Leute und Infrastruktur. Was fehlt: ein bewährtes Framework und ein Sparringspartner der das schon 10x gemacht hat.</p>
-        </div>
-      </div>
+        <div class="p2cx-card mt-3 p2cx-card-quiet"><div class="p2cx-body">
+          <strong>Kickstart-Projekt:</strong> <span class="text-muted">Einmalig, abhängig vom Umfang (typisch 15.000–40.000 EUR). Bestandsaufnahme, Vision-Workshop, erste Apps, Infrastruktur-Setup, Wissenstransfer.</span>
+        </div></div>
+      </div></div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Warum lokal -->
-<section class="section section-alt" id="lokal">
-  <div class="container">
-    <h2 class="section-title">Warum ein Partner vor Ort?</h2>
-    <p class="section-subtitle">Digitalisierung braucht Vertrauen — und manchmal einen Kaffee zusammen.</p>
-    <div class="row g-4">
-      <div class="col-md-6 col-lg-3">
-        <div class="p2cx-card h-100 text-center">
-          <span class="icon">🤝</span>
-          <h5>Persönlich</h5>
-          <p>Workshops vor Ort, Kickoff bei Ihnen im Büro. Kein anonymes Offshore-Team.</p>
+  <!-- Warum lokal -->
+  <section class="py-3">
+    <div class="container">
+      <div class="p2cx-card"><div class="p2cx-body">
+        <h2 class="mb-3">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          Warum ein Partner vor Ort?
+        </h2>
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <strong>Persönlich</strong><br>
+              <span class="text-muted">Workshops vor Ort, Kickoff bei Ihnen. Kein anonymes Offshore-Team.</span>
+            </div></div>
+          </div>
+          <div class="col-md-3">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <strong>Schnell</strong><br>
+              <span class="text-muted">Problem am Morgen? Wir sind in 20 Minuten da. Oder per Call in 2 Minuten.</span>
+            </div></div>
+          </div>
+          <div class="col-md-3">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <strong>Nachhaltig</strong><br>
+              <span class="text-muted">Langfristige Partnerschaft statt Hit-and-Run. Wir verschwinden nicht nach dem Projekt.</span>
+            </div></div>
+          </div>
+          <div class="col-md-3">
+            <div class="p2cx-card h-100"><div class="p2cx-body">
+              <strong>Mittelstand-DNA</strong><br>
+              <span class="text-muted">Wir kennen die Region. Kein Konzern-Sprech, sondern echte Lösungen.</span>
+            </div></div>
+          </div>
         </div>
-      </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="p2cx-card h-100 text-center">
-          <span class="icon">⚡</span>
-          <h5>Schnell</h5>
-          <p>Problem am Morgen? Wir sind in 20 Minuten bei Ihnen. Oder per Videocall in 2 Minuten.</p>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="p2cx-card h-100 text-center">
-          <span class="icon">🌱</span>
-          <h5>Nachhaltig</h5>
-          <p>Wir verschwinden nicht nach dem Projekt. Langfristige Partnerschaft statt Hit-and-Run.</p>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-3">
-        <div class="p2cx-card h-100 text-center">
-          <span class="icon">🏭</span>
-          <h5>Mittelstand-DNA</h5>
-          <p>Wir kennen die Herausforderungen der Region. Kein Konzern-Sprech, sondern echte Lösungen.</p>
-        </div>
-      </div>
+      </div></div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Was Sie bekommen -->
-<section class="section" id="ergebnis">
-  <div class="container">
-    <h2 class="section-title">Das Ergebnis nach 12 Monaten</h2>
-    <p class="section-subtitle">Nicht 1 App die ein Dienstleister gebaut hat — sondern 5 Apps die IHR Team versteht.</p>
-    <div class="row g-4">
-      <div class="col-md-6 col-lg-4">
-        <div class="p2cx-card h-100">
-          <h5>Eigene digitale Tools</h5>
-          <p style="color:var(--p2cx-text);">Keine Excel-Listen mehr. Stattdessen Apps die genau zu Ihren Prozessen passen — auf Ihrer Infrastruktur, unter Ihrer Kontrolle.</p>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-4">
-        <div class="p2cx-card h-100">
-          <h5>Ein befähigtes Team</h5>
-          <p style="color:var(--p2cx-text);">Ihr Team versteht die Tools, kann sie anpassen und erweitern. Kein Vendor-Lock-in, kein Wissensmonopol.</p>
-        </div>
-      </div>
-      <div class="col-md-6 col-lg-4">
-        <div class="p2cx-card h-100" style="border-color:var(--p2cx-gold);">
-          <h5>Ein Sicherheitsnetz</h5>
-          <p style="color:var(--p2cx-text);">p2cx bleibt als Sparringspartner. Code Reviews, Notfall-Support, neue Ideen. Sie sind unabhängig — aber nicht allein.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+  <!-- Kontakt -->
+  <section id="kontakt" class="py-3">
+    <div class="container">
+      <div class="p2cx-card"><div class="p2cx-body">
+        <h2 class="mb-2">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="4" width="18" height="15" rx="2"/><path d="M3 9h18"/><path d="M15 13l5 2-5 2"/><path d="M8 17h4"/></svg></span>
+          Kostenloses Erstgespräch
+        </h2>
+        <p class="text-muted">30 Minuten — unverbindlich, persönlich, konkret. Wir schauen gemeinsam, ob und wie p2cx Ihnen helfen kann.</p>
 
-<!-- Kontaktformular -->
-<section class="section section-alt" id="kontakt">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <h2 class="section-title text-center">Kostenloses Erstgespräch</h2>
-        <p class="section-subtitle text-center">30 Minuten — unverbindlich, persönlich, konkret. Wir schauen gemeinsam, ob und wie p2cx Ihnen helfen kann.</p>
+        <form class="p2cx-card mt-2" id="leadForm" onsubmit="return sendLead(event)">
+          <div class="p2cx-body">
+            <!-- Honeypot -->
+            <input type="text" name="website" id="hp" tabindex="-1" autocomplete="off"
+                   style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;opacity:0;" aria-hidden="true">
 
-        <div class="contact-form">
-          <form id="leadForm" onsubmit="submitForm(event)">
             <div class="row g-3">
               <div class="col-md-6">
-                <label for="name">Name *</label>
-                <input type="text" id="name" name="name" required placeholder="Max Mustermann">
+                <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+                <input id="name" name="name" class="form-control" required autocomplete="name">
               </div>
               <div class="col-md-6">
-                <label for="firma">Unternehmen *</label>
-                <input type="text" id="firma" name="firma" required placeholder="Mustermann GmbH">
+                <label for="firma" class="form-label">Unternehmen <span class="text-danger">*</span></label>
+                <input id="firma" name="company" class="form-control" required autocomplete="organization">
               </div>
               <div class="col-md-6">
-                <label for="email">E-Mail *</label>
-                <input type="email" id="email" name="email" required placeholder="max@mustermann.de">
+                <label for="mail" class="form-label">E-Mail <span class="text-danger">*</span></label>
+                <input id="mail" name="email" type="email" class="form-control" required autocomplete="email">
               </div>
               <div class="col-md-6">
-                <label for="telefon">Telefon</label>
-                <input type="tel" id="telefon" name="telefon" placeholder="+49 451 ...">
+                <label for="telefon" class="form-label">Telefon</label>
+                <input id="telefon" name="telefon" type="tel" class="form-control" autocomplete="tel">
               </div>
               <div class="col-md-6">
-                <label for="mitarbeiter">Mitarbeiterzahl</label>
-                <select id="mitarbeiter" name="mitarbeiter">
+                <label for="mitarbeiter" class="form-label">Mitarbeiterzahl</label>
+                <select id="mitarbeiter" name="mitarbeiter" class="form-select">
                   <option value="">Bitte wählen</option>
-                  <option value="10-50">10-50</option>
-                  <option value="50-100">50-100</option>
-                  <option value="100-250">100-250</option>
-                  <option value="250-500">250-500</option>
+                  <option value="10-50">10–50</option>
+                  <option value="50-100">50–100</option>
+                  <option value="100-250">100–250</option>
+                  <option value="250-500">250–500</option>
                   <option value="500+">500+</option>
                 </select>
               </div>
               <div class="col-md-6">
-                <label for="situation">Ihre Situation</label>
-                <select id="situation" name="situation">
+                <label for="situation" class="form-label">Ihre Situation</label>
+                <select id="situation" name="situation" class="form-select">
                   <option value="">Bitte wählen</option>
                   <option value="keine-it">Keine eigene IT</option>
                   <option value="it-dienstleister">IT-Dienstleister vorhanden</option>
@@ -327,57 +273,81 @@
                 </select>
               </div>
               <div class="col-12">
-                <label for="nachricht">Was beschäftigt Sie gerade?</label>
-                <textarea id="nachricht" name="nachricht" rows="3" placeholder="Z.B.: Wir haben zu viele Excel-Listen und wollen unsere Auftragsabwicklung digitalisieren..."></textarea>
+                <label for="msg" class="form-label">Was beschäftigt Sie gerade?</label>
+                <textarea id="msg" name="message" rows="3" class="form-control" placeholder="Z.B.: Wir haben zu viele Excel-Listen und wollen unsere Auftragsabwicklung digitalisieren..."></textarea>
               </div>
-              <div class="col-12 text-center mt-2">
-                <button type="submit" class="btn-cta" id="submitBtn">Erstgespräch anfragen</button>
-                <p class="text-muted mt-2" style="font-size:.8rem;">Keine Kosten, kein Risiko. Wir melden uns innerhalb von 24 Stunden.</p>
+              <div class="col-12 d-flex align-items-center gap-2">
+                <button class="btn btn-primary btn-p2cx" type="submit">Erstgespräch anfragen</button>
+                <span class="smallmuted">Wir melden uns innerhalb eines Arbeitstages.</span>
               </div>
             </div>
-          </form>
-          <div id="successMessage" style="display:none;" class="text-center py-4">
-            <span style="font-size:3rem;">✅</span>
-            <h3 class="mt-3" style="font-weight:700;">Vielen Dank!</h3>
-            <p style="color:var(--p2cx-muted);">Wir melden uns innerhalb von 24 Stunden bei Ihnen. Bis bald!</p>
           </div>
-        </div>
-      </div>
+        </form>
+
+      </div></div>
     </div>
-  </div>
-</section>
+  </section>
+
+</main>
 
 <!-- Footer -->
-<footer class="footer-p2cx">
-  <div class="container text-center">
-    <p class="mb-1"><strong>p2cx <span class="gold">GmbH</span></strong> — Lübeck</p>
-    <p class="mb-1">platform to Customer Experience — Enablement für den Mittelstand</p>
-    <p class="mb-0"><a href="/de/impressum.html">Impressum</a> · <a href="/de/datenschutz.html">Datenschutz</a> · <a href="/de/agb/">AGB</a></p>
-  </div>
-</footer>
+<div class="container mt-3 pb-2">
+  <div class="p2cx-card p2cx-card-quiet"><div class="p2cx-body py-2 text-center small text-muted">
+    © 2025 p2cx · Lübeck · <a href="/de/impressum.html">Impressum</a> · <a href="/de/datenschutz.html">Datenschutz</a> · <a href="/de/agb/">AGB</a>
+  </div></div>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-function submitForm(e) {
+async function sendLead(e){
   e.preventDefault();
-  const form = document.getElementById('leadForm');
-  const data = Object.fromEntries(new FormData(form));
+  const form = e.target;
 
-  // UTM-Parameter aus URL extrahieren
+  // Honeypot
+  if(document.getElementById('hp')?.value) return false;
+
+  const btn = form.querySelector('button[type="submit"]');
+  if(btn) btn.disabled = true;
+
+  // UTM-Parameter aus URL
   const params = new URLSearchParams(window.location.search);
-  data.utm_source = params.get('utm_source') || '';
-  data.utm_medium = params.get('utm_medium') || '';
-  data.utm_campaign = params.get('utm_campaign') || '';
-  data.utm_content = params.get('utm_content') || '';
-  data.landingpage = window.location.pathname;
-  data.timestamp = new Date().toISOString();
 
-  // TODO: An Backend senden (z.B. Operations Platform API)
-  // Vorerst: Daten in Console loggen und Erfolg zeigen
-  console.log('Lead captured:', data);
+  const payload = {
+    name: document.getElementById('name').value.trim(),
+    email: document.getElementById('mail').value.trim(),
+    company: document.getElementById('firma').value.trim(),
+    telefon: document.getElementById('telefon').value.trim(),
+    mitarbeiter: document.getElementById('mitarbeiter').value,
+    situation: document.getElementById('situation').value,
+    message: document.getElementById('msg').value.trim(),
+    utm_source: params.get('utm_source') || '',
+    utm_medium: params.get('utm_medium') || '',
+    utm_campaign: params.get('utm_campaign') || '',
+    utm_content: params.get('utm_content') || '',
+    page: location.pathname,
+    lang: 'de',
+    ts: new Date().toISOString()
+  };
 
-  form.style.display = 'none';
-  document.getElementById('successMessage').style.display = 'block';
+  const FUNCTION_URL = 'https://prod-02.germanywestcentral.logic.azure.com:443/workflows/25ca0e47a6164ad79b3364698f13740e/triggers/When_an_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_an_HTTP_request_is_received%2Frun&sv=1.0&sig=DJlZD_qMRReJpH4_FbYw2ZoLTtE2HRNAlCuxCSuYKkg';
+
+  try{
+    const res = await fetch(FUNCTION_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if(res.ok){
+      alert('Danke! Wir melden uns zeitnah.');
+      form.reset();
+    } else {
+      alert('Das hat leider nicht geklappt. Bitte direkt mailen an hello@p2cx.de');
+    }
+  }catch(err){
+    alert('Netzwerkfehler. Bitte direkt mailen an hello@p2cx.de');
+  }finally{
+    if(btn) btn.disabled = false;
+  }
+  return false;
 }
 </script>
 </body>
