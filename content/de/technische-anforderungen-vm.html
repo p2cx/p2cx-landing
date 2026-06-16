@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greif-Velox — Technische Anforderungen VM</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gv-green:#7AA73E;
+    --gv-green-light:#C7D53A;
+    --gv-green-dark:#5a8a28;
+    --gv-green-soft:#f0f6e6;
+    --gv-green-bg:#f7faf0;
+    --gv-dark:#1e2a1a;
+    --gv-text:#1f2937;
+    --gv-muted:#6b7280;
+    --gv-border:#e5e7eb;
+    --gv-shadow:0 4px 12px rgba(2,6,23,.08);
+    --gv-shadow-hover:0 8px 24px rgba(2,6,23,.12);
+    --gv-radius:6px;
+    --gv-bg:#f8faf6;
+  }
+  html,body{ background:var(--gv-bg); color:var(--gv-text); font-family:'Open Sans',-apple-system,system-ui,sans-serif; font-weight:300; scroll-behavior:smooth; }
+  h1,h2,h3,h4,h5{ letter-spacing:-0.02em; }
+  a{ color:var(--gv-green); text-decoration:none; }
+  a:hover{ text-decoration:underline; }
+
+  /* Navigation */
+  .nav-gv{ position:sticky; top:0; z-index:50; background:rgba(248,250,246,.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--gv-border); }
+  .nav-gv .brand{ font-weight:800; font-size:1.15rem; letter-spacing:-0.02em; }
+  .nav-gv .brand span{ color:var(--gv-green); }
+  .nav-gv a.nav-link{ color:var(--gv-muted); font-size:.82rem; padding:.35rem .65rem; border-radius:999px; text-decoration:none; transition:all .2s; }
+  .nav-gv a.nav-link:hover{ color:var(--gv-text); background:#fff; text-decoration:none; }
+
+  /* Hero */
+  .hero{ padding:5rem 0 4rem; background:linear-gradient(135deg, var(--gv-dark) 0%, #3d5a28 50%, var(--gv-green) 100%); color:#fff; }
+  .hero h1{ font-size:2.6rem; font-weight:800; line-height:1.15; }
+  .hero h1 span{ color:var(--gv-green-light); }
+  .hero .lead{ font-size:1.1rem; font-weight:300; color:rgba(255,255,255,.8); max-width:720px; line-height:1.7; }
+  .hero .eyebrow{ font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:rgba(255,255,255,.5); }
+  .hero .meta-info{ font-size:.85rem; color:rgba(255,255,255,.55); margin-top:1.5rem; }
+
+  /* Sections */
+  .block{ padding:4rem 0; }
+  .block.alt{ background:#fff; border-top:1px solid var(--gv-border); border-bottom:1px solid var(--gv-border); }
+  .eyebrow{ font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.12em; color:var(--gv-green); }
+  .section-title{ font-size:clamp(1.6rem,2.8vw,2.2rem); font-weight:800; margin-bottom:.4rem; }
+  .section-sub{ color:var(--gv-muted); font-size:1rem; margin-bottom:2.5rem; max-width:720px; line-height:1.7; }
+
+  /* Cards */
+  .gv-card{ background:#fff; border:1px solid var(--gv-border); border-radius:var(--gv-radius); box-shadow:var(--gv-shadow); transition:transform .2s ease, box-shadow .2s ease; }
+  .gv-card:hover{ transform:translateY(-2px); box-shadow:var(--gv-shadow-hover); }
+  .gv-body{ padding:1.5rem; }
+
+  /* Tables */
+  .table-gv{ border-collapse:separate; border-spacing:0; width:100%; font-size:.9rem; }
+  .table-gv thead th{ background:var(--gv-green-soft); color:var(--gv-green-dark); font-weight:700; font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; padding:.75rem 1rem; border-bottom:2px solid var(--gv-green); }
+  .table-gv thead th:first-child{ border-radius:var(--gv-radius) 0 0 0; }
+  .table-gv thead th:last-child{ border-radius:0 var(--gv-radius) 0 0; }
+  .table-gv tbody td{ padding:.7rem 1rem; border-bottom:1px solid var(--gv-border); vertical-align:top; }
+  .table-gv tbody tr:hover{ background:var(--gv-green-soft); }
+  .table-gv tbody tr:last-child td:first-child{ border-radius:0 0 0 var(--gv-radius); }
+  .table-gv tbody tr:last-child td:last-child{ border-radius:0 0 var(--gv-radius) 0; }
+
+  /* Code blocks */
+  .code-block{ background:var(--gv-dark); color:#d4e6c8; border-radius:var(--gv-radius); padding:1.25rem 1.5rem; font-family:'Cascadia Code','Fira Code','JetBrains Mono',monospace; font-size:.85rem; line-height:1.7; overflow-x:auto; position:relative; border:1px solid #2d3d26; }
+  .code-block .code-label{ position:absolute; top:0; right:0; background:var(--gv-green-dark); color:#fff; font-size:.65rem; font-weight:700; padding:.25rem .75rem; border-radius:0 var(--gv-radius) 0 var(--gv-radius); text-transform:uppercase; letter-spacing:.06em; font-family:'Open Sans',sans-serif; }
+  .code-block code{ color:#d4e6c8; }
+  .code-block .comment{ color:#6a8a5a; }
+  .code-block .keyword{ color:#C7D53A; }
+  .code-block .string{ color:#a8d08d; }
+
+  /* Checklist */
+  .checklist{ list-style:none; padding:0; margin:0; }
+  .checklist li{ display:flex; align-items:flex-start; gap:.75rem; padding:.65rem 0; border-bottom:1px solid var(--gv-border); font-size:.92rem; }
+  .checklist li:last-child{ border-bottom:none; }
+  .checklist input[type="checkbox"]{ width:20px; height:20px; accent-color:var(--gv-green); margin-top:2px; flex-shrink:0; cursor:default; }
+
+  /* Accordion / FAQ */
+  .accordion-gv .accordion-button{ font-weight:600; color:var(--gv-text); background:#fff; font-size:.95rem; box-shadow:none; }
+  .accordion-gv .accordion-button:not(.collapsed){ background:var(--gv-green-soft); color:var(--gv-green-dark); }
+  .accordion-gv .accordion-button:focus{ box-shadow:0 0 0 3px rgba(122,167,62,.25); }
+  .accordion-gv .accordion-body{ font-size:.9rem; line-height:1.7; color:var(--gv-muted); }
+  .accordion-gv .accordion-item{ border:1px solid var(--gv-border); border-radius:var(--gv-radius) !important; margin-bottom:.5rem; overflow:hidden; }
+
+  /* Diagram */
+  .diagram-col{ background:#fff; border:2px solid var(--gv-border); border-radius:var(--gv-radius); padding:1.5rem; position:relative; }
+  .diagram-col.it-dl{ border-color:var(--gv-border); }
+  .diagram-col.p2cx{ border-color:var(--gv-green); }
+  .diagram-col h4{ font-size:.9rem; font-weight:800; text-transform:uppercase; letter-spacing:.06em; margin-bottom:1rem; }
+  .diagram-col.it-dl h4{ color:var(--gv-muted); }
+  .diagram-col.p2cx h4{ color:var(--gv-green-dark); }
+  .diagram-item{ display:flex; align-items:center; gap:.5rem; padding:.5rem 0; font-size:.88rem; border-bottom:1px solid var(--gv-border); }
+  .diagram-item:last-child{ border-bottom:none; }
+  .diagram-dot{ width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+  .diagram-col.it-dl .diagram-dot{ background:var(--gv-muted); }
+  .diagram-col.p2cx .diagram-dot{ background:var(--gv-green); }
+
+  /* Option cards */
+  .option-card{ border-left:4px solid var(--gv-green); background:#fff; border-radius:0 var(--gv-radius) var(--gv-radius) 0; padding:1.25rem 1.5rem; margin-bottom:1rem; box-shadow:var(--gv-shadow); }
+  .option-card.recommended{ border-left-color:var(--gv-green); background:var(--gv-green-soft); }
+  .option-card h5{ font-weight:700; font-size:1rem; margin-bottom:.5rem; }
+  .option-badge{ display:inline-block; font-size:.65rem; font-weight:700; text-transform:uppercase; letter-spacing:.08em; padding:.15rem .5rem; border-radius:999px; background:var(--gv-green); color:#fff; margin-left:.5rem; vertical-align:middle; }
+
+  /* Monitoring flow */
+  .flow-block{ background:var(--gv-dark); color:#d4e6c8; border-radius:var(--gv-radius); padding:1.25rem 1.5rem; font-family:'Cascadia Code','Fira Code',monospace; font-size:.82rem; line-height:1.8; }
+
+  /* Note boxes */
+  .note-box{ background:var(--gv-green-soft); border:1px solid var(--gv-green); border-radius:var(--gv-radius); padding:1rem 1.25rem; font-size:.9rem; color:var(--gv-green-dark); }
+  .note-box strong{ font-weight:700; }
+
+  /* Footer */
+  footer{ padding:3rem 0 2rem; border-top:1px solid var(--gv-border); background:#fff; }
+  footer .brand{ font-weight:800; font-size:1.2rem; }
+  footer .brand span{ color:var(--gv-green); }
+
+  /* Responsive nav scroll */
+  @media(max-width:991px){
+    .nav-links{ overflow-x:auto; white-space:nowrap; -webkit-overflow-scrolling:touch; }
+    .hero h1{ font-size:1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav-gv py-2">
+  <div class="container d-flex align-items-center gap-3 flex-wrap">
+    <div class="brand">GREIF<span>-VELOX</span></div>
+    <div class="nav-links d-flex align-items-center gap-1 ms-auto flex-wrap">
+      <a class="nav-link" href="#zusammenfassung">Zusammenfassung</a>
+      <a class="nav-link" href="#vm">VM</a>
+      <a class="nav-link" href="#docker">Docker</a>
+      <a class="nav-link" href="#netzwerk">Netzwerk</a>
+      <a class="nav-link" href="#datenbank">Datenbank</a>
+      <a class="nav-link" href="#remote">Remote</a>
+      <a class="nav-link" href="#monitoring">Monitoring</a>
+      <a class="nav-link" href="#wartung">Wartung</a>
+      <a class="nav-link" href="#checkliste">Checkliste</a>
+      <a class="nav-link" href="#faq">FAQ</a>
+      <a class="nav-link" href="#kontakt">Kontakt</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="eyebrow mb-3">Technisches Briefing</div>
+    <h1>Technische Anforderungen<br><span>VM für p2cx Apps</span></h1>
+    <p class="lead mt-3">Greif-Velox möchte eigene Web-Applikationen auf einer VM im eigenen Netzwerk betreiben. Dieses Dokument beschreibt, was die VM braucht, welche Zugänge p2cx benötigt und wie wir gemeinsam den Betrieb sicherstellen.</p>
+    <div class="meta-info">Dokument für: IT-Dienstleister Greif-Velox &middot; Stand: 2026-05-01 &middot; p2cx GmbH</div>
+  </div>
+</section>
+
+<!-- Zusammenfassung -->
+<section class="block alt" id="zusammenfassung">
+  <div class="container">
+    <div class="eyebrow">Überblick</div>
+    <h2 class="section-title">Zusammenfassung</h2>
+    <p class="section-sub">Die Apps basieren auf einem modernen Open-Source-Stack (Node.js, PostgreSQL). Wir empfehlen Docker als Deployment-Methode &mdash; das macht Updates einfach, Rollbacks sicher und den Betrieb reproduzierbar.</p>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="gv-card h-100"><div class="gv-body">
+          <h5 style="font-weight:700; font-size:.95rem;">Moderner Stack</h5>
+          <p style="font-size:.88rem; color:var(--gv-muted); margin:0;">Node.js, PostgreSQL, Docker &mdash; Open Source, bewährt, leichtgewichtig.</p>
+        </div></div>
+      </div>
+      <div class="col-md-4">
+        <div class="gv-card h-100"><div class="gv-body">
+          <h5 style="font-weight:700; font-size:.95rem;">Docker Deployment</h5>
+          <p style="font-size:.88rem; color:var(--gv-muted); margin:0;">Einfache Updates, sichere Rollbacks, reproduzierbarer Betrieb.</p>
+        </div></div>
+      </div>
+      <div class="col-md-4">
+        <div class="gv-card h-100"><div class="gv-body">
+          <h5 style="font-weight:700; font-size:.95rem;">Rein intern</h5>
+          <p style="font-size:.88rem; color:var(--gv-muted); margin:0;">Kein eingehender Internet-Zugang nötig &mdash; nur im Firmennetzwerk erreichbar.</p>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 1. VM-Anforderungen -->
+<section class="block" id="vm">
+  <div class="container">
+    <div class="eyebrow">Abschnitt 1</div>
+    <h2 class="section-title">VM-Anforderungen</h2>
+    <p class="section-sub">Was die virtuelle Maschine braucht, um die p2cx-Apps zuverlässig zu betreiben.</p>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Betriebssystem</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Anforderung</th><th>Empfehlung</th></tr></thead>
+        <tbody>
+          <tr><td><strong>OS</strong></td><td>Ubuntu 24.04 LTS (oder Debian 12)</td></tr>
+          <tr><td><strong>Warum Linux?</strong></td><td>Alle Komponenten laufen nativ, kein Windows-Overhead, kostenlos, sicher</td></tr>
+          <tr><td><strong>Keine GUI nötig</strong></td><td>Server-Installation ohne Desktop (weniger Angriffsfläche, weniger Ressourcen)</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Hardware / Ressourcen</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <div class="table-responsive">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Ressource</th><th>Minimum</th><th>Empfohlen</th><th>Begründung</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CPU</strong></td><td>2 vCPUs</td><td>4 vCPUs</td><td>Node.js ist single-threaded, aber Build-Prozesse brauchen Leistung</td></tr>
+          <tr><td><strong>RAM</strong></td><td>4 GB</td><td>8 GB</td><td>PostgreSQL + 3 Apps + Build-Cache</td></tr>
+          <tr><td><strong>Disk</strong></td><td>40 GB SSD</td><td>80 GB SSD</td><td>OS + Docker Images + DB + Logs + Backups</td></tr>
+          <tr><td><strong>Netzwerk</strong></td><td>100 Mbit/s</td><td>1 Gbit/s</td><td>Intern reicht 100 Mbit, für Updates mehr hilfreich</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+
+    <div class="note-box">
+      <strong>Für den Start reicht die Minimum-Konfiguration.</strong> Skalierung später einfach möglich (mehr RAM, mehr Disk).
+    </div>
+  </div>
+</section>
+
+<!-- 2. Docker -->
+<section class="block alt" id="docker">
+  <div class="container">
+    <div class="eyebrow">Abschnitt 2</div>
+    <h2 class="section-title">Deployment-Ansatz: Docker (empfohlen)</h2>
+    <p class="section-sub">Warum Docker statt direkte Installation? Ein Vergleich.</p>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Vergleich: Ohne Docker vs. Mit Docker</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <div class="table-responsive">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Aspekt</th><th>Ohne Docker</th><th>Mit Docker</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Installation</strong></td><td>Node.js, npm, PostgreSQL, nginx einzeln installieren und konfigurieren</td><td><code>docker compose up</code> &mdash; fertig</td></tr>
+          <tr><td><strong>Updates</strong></td><td>Manuell: git pull, npm ci, build, restart</td><td>Neues Image ziehen, Container neu starten</td></tr>
+          <tr><td><strong>Rollback</strong></td><td>Kompliziert (alter Build wiederherstellen)</td><td>Einfach: vorheriges Image starten</td></tr>
+          <tr><td><strong>Mehrere Apps</strong></td><td>Port-Konflikte möglich, geteilte Abhängigkeiten</td><td>Jede App isoliert in eigenem Container</td></tr>
+          <tr><td><strong>Reproduzierbarkeit</strong></td><td>&bdquo;Bei mir läuft's&ldquo; &mdash; auf dem Server nicht</td><td>Identische Umgebung überall</td></tr>
+          <tr><td><strong>Sicherheit</strong></td><td>Apps teilen sich OS-Ressourcen</td><td>Apps sind isoliert voneinander</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Was auf der VM installiert werden muss</h4>
+    <div class="code-block mb-4">
+      <span class="code-label">Shell</span>
+<span class="comment"># 1. Docker Engine + Docker Compose</span>
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+
+<span class="comment"># 2. Das war's.</span>
+<span class="comment"># Alles andere läuft IN Docker-Containern.</span>
+    </div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">So sieht ein Deployment aus</h4>
+    <div class="code-block mb-4">
+      <span class="code-label">docker-compose.yml</span>
+<span class="comment"># docker-compose.yml (Beispiel für 3 Apps)</span>
+<span class="keyword">version:</span> <span class="string">"3.9"</span>
+
+<span class="keyword">services:</span>
+  <span class="comment"># --- Datenbank ---</span>
+  <span class="keyword">postgres:</span>
+    <span class="keyword">image:</span> postgres:16
+    <span class="keyword">restart:</span> always
+    <span class="keyword">volumes:</span>
+      - pgdata:/var/lib/postgresql/data
+    <span class="keyword">environment:</span>
+      POSTGRES_PASSWORD: <span class="string">${DB_PASSWORD}</span>
+    <span class="keyword">ports:</span>
+      - <span class="string">"5432:5432"</span>
+
+  <span class="comment"># --- App 1: OPOS ---</span>
+  <span class="keyword">opos:</span>
+    <span class="keyword">image:</span> ghcr.io/hauke1979/opos:latest
+    <span class="keyword">restart:</span> always
+    <span class="keyword">ports:</span>
+      - <span class="string">"3001:3000"</span>
+    <span class="keyword">environment:</span>
+      DATABASE_URL: <span class="string">postgresql://postgres:${DB_PASSWORD}@postgres:5432/opos</span>
+    <span class="keyword">depends_on:</span>
+      - postgres
+
+  <span class="comment"># --- App 2: Projektmonitoring ---</span>
+  <span class="keyword">projektmonitoring:</span>
+    <span class="keyword">image:</span> ghcr.io/hauke1979/projektmonitoring:latest
+    <span class="keyword">restart:</span> always
+    <span class="keyword">ports:</span>
+      - <span class="string">"3002:3000"</span>
+    <span class="keyword">environment:</span>
+      DATABASE_URL: <span class="string">postgresql://postgres:${DB_PASSWORD}@postgres:5432/projektmonitoring</span>
+    <span class="keyword">depends_on:</span>
+      - postgres
+
+  <span class="comment"># --- App 3: Non Conformity ---</span>
+  <span class="keyword">nonconformity:</span>
+    <span class="keyword">image:</span> ghcr.io/hauke1979/nonconformity:latest
+    <span class="keyword">restart:</span> always
+    <span class="keyword">ports:</span>
+      - <span class="string">"3003:3000"</span>
+    <span class="keyword">environment:</span>
+      DATABASE_URL: <span class="string">postgresql://postgres:${DB_PASSWORD}@postgres:5432/nonconformity</span>
+    <span class="keyword">depends_on:</span>
+      - postgres
+
+  <span class="comment"># --- Reverse Proxy (HTTPS + Routing) ---</span>
+  <span class="keyword">nginx:</span>
+    <span class="keyword">image:</span> nginx:alpine
+    <span class="keyword">restart:</span> always
+    <span class="keyword">ports:</span>
+      - <span class="string">"80:80"</span>
+      - <span class="string">"443:443"</span>
+    <span class="keyword">volumes:</span>
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+
+<span class="keyword">volumes:</span>
+  pgdata:
+    </div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Update-Prozess (so einfach ist das)</h4>
+    <div class="code-block">
+      <span class="code-label">Shell</span>
+<span class="comment"># Neues Image ziehen + Container neu starten</span>
+docker compose pull opos
+docker compose up -d opos
+
+<span class="comment"># Rollback bei Problemen</span>
+docker compose down opos
+docker tag ghcr.io/hauke1979/opos:latest ghcr.io/hauke1979/opos:broken
+docker pull ghcr.io/hauke1979/opos:previous
+docker compose up -d opos
+    </div>
+  </div>
+</section>
+
+<!-- 3. Netzwerk -->
+<section class="block" id="netzwerk">
+  <div class="container">
+    <div class="eyebrow">Abschnitt 3</div>
+    <h2 class="section-title">Netzwerk-Anforderungen</h2>
+    <p class="section-sub">Welche Ports, welche Richtungen, welche DNS-Einträge.</p>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Interne Erreichbarkeit</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Port</th><th>Dienst</th><th>Zugriff</th></tr></thead>
+        <tbody>
+          <tr><td>80</td><td>HTTP (Redirect auf HTTPS)</td><td>Internes Netzwerk</td></tr>
+          <tr><td>443</td><td>HTTPS (nginx Reverse Proxy)</td><td>Internes Netzwerk</td></tr>
+          <tr><td>5432</td><td>PostgreSQL</td><td>Nur VM-intern (nicht von außen!)</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Brauchen die Apps Internet-Zugang?</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <div class="table-responsive">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Richtung</th><th>Wofür</th><th>Ports</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Ausgehend</strong></td><td>Docker Images ziehen (Updates)</td><td>443 (HTTPS)</td></tr>
+          <tr><td><strong>Ausgehend</strong></td><td>AI-API (Mammouth.ai, EU-hosted)</td><td>443 (HTTPS)</td></tr>
+          <tr><td><strong>Ausgehend</strong></td><td>E-Mail-API (Microsoft Graph, falls genutzt)</td><td>443 (HTTPS)</td></tr>
+          <tr><td><strong>Eingehend</strong></td><td>Nur intern &mdash; Mitarbeiter im LAN greifen zu</td><td>443 (HTTPS)</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+
+    <div class="note-box mb-4">
+      <strong>Kein eingehender Internet-Zugang nötig</strong> &mdash; die Apps sind nur im Firmennetzwerk erreichbar. Ausnahme: Remote-Zugang für p2cx (siehe Abschnitt 5).
+    </div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">DNS (intern)</h4>
+    <p style="font-size:.92rem; color:var(--gv-muted); margin-bottom:1rem;">Empfehlung: Interne DNS-Einträge für die Apps anlegen:</p>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <table class="table-gv mb-0">
+        <thead><tr><th>DNS-Name</th><th>Ziel</th><th>Beispiel</th></tr></thead>
+        <tbody>
+          <tr><td><code>opos.greifvelox.local</code></td><td>VM-IP:443</td><td>192.168.1.100</td></tr>
+          <tr><td><code>projekte.greifvelox.local</code></td><td>VM-IP:443</td><td>192.168.1.100</td></tr>
+          <tr><td><code>nacharbeit.greifvelox.local</code></td><td>VM-IP:443</td><td>192.168.1.100</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+    <p style="font-size:.88rem; color:var(--gv-muted);">Alternative: IP + Port direkt (funktioniert, aber weniger elegant).</p>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-top:2rem; margin-bottom:1rem;">SSL-Zertifikate (HTTPS)</h4>
+    <div class="gv-card"><div class="gv-body p-0">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Option</th><th>Beschreibung</th><th>Empfehlung</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Self-signed</strong></td><td>Selbst erstelltes Zertifikat, Browser zeigt Warnung</td><td>Für den Start OK</td></tr>
+          <tr><td><strong>Interne CA</strong></td><td>Firmen-eigene Certificate Authority</td><td>Ideal wenn vorhanden</td></tr>
+          <tr><td><strong>Let's Encrypt</strong></td><td>Nur wenn VM von außen erreichbar (Port 80/443)</td><td>Nicht nötig bei rein internem Betrieb</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+  </div>
+</section>
+
+<!-- 4. ERP-Anbindung -->
+<section class="block" id="erp">
+  <div class="container">
+    <div class="eyebrow">Abschnitt 4</div>
+    <h2 class="section-title">ERP-Anbindung (Penta)</h2>
+    <p class="section-sub">Die OPOS-App braucht Zugriff auf Daten aus dem ERP-System. Die VM muss im internen Netzwerk den Penta-Datenbankserver erreichen können.</p>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Empfohlener Ansatz: Read-Only SQL-Zugriff</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Aspekt</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Datenbank-Typ</strong></td><td>Vermutlich Microsoft SQL Server (bei Penta &uuml;blich)</td></tr>
+          <tr><td><strong>Port</strong></td><td>1433 (MSSQL Standard)</td></tr>
+          <tr><td><strong>Richtung</strong></td><td>VM &rarr; Penta-DB-Server (intern, kein Internet)</td></tr>
+          <tr><td><strong>Berechtigungen</strong></td><td>Read-Only &mdash; die App liest nur, schreibt nie ins ERP</td></tr>
+          <tr><td><strong>DB-User</strong></td><td>Dedizierter User mit minimalen Rechten (nur SELECT auf ben&ouml;tigte Tabellen/Views)</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Varianten</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Variante</th><th>Beschreibung</th><th>Vorteil</th><th>Nachteil</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Direkte SQL-Abfrage</strong></td><td>VM verbindet sich direkt auf Penta-DB</td><td>Echtzeit-Daten, einfach</td><td>DB-Last durch Abfragen</td></tr>
+          <tr><td><strong>Staging-View/Kopie</strong></td><td>IT-DL stellt eine replizierte Kopie/View bereit</td><td>Keine Last auf Produktiv-DB</td><td>Daten nicht ganz live</td></tr>
+          <tr><td><strong>Datei-Export (CSV)</strong></td><td>Penta exportiert regelm&auml;&szlig;ig auf Netzlaufwerk</td><td>Keine DB-Verbindung n&ouml;tig</td><td>Manuell, nicht live, fehleranf&auml;llig</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+    <p style="font-size:.9rem; color:var(--gv-muted);"><strong>Empfehlung:</strong> Direkte SQL-Abfrage (Read-Only) oder Staging-View. Datei-Export nur als Notl&ouml;sung.</p>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-top:2rem; margin-bottom:1rem;">Sicherheit</h4>
+    <div style="font-size:.88rem; background:var(--gv-green-soft); border-radius:var(--gv-radius); padding:1.2rem;">
+      <ul style="margin:0; padding-left:1.2rem;">
+        <li>Die App <strong>liest nur</strong> &mdash; kein Schreibzugriff auf Penta, niemals</li>
+        <li>Der DB-User hat <strong>nur SELECT-Rechte</strong> auf definierte Tabellen</li>
+        <li>Verbindung l&auml;uft nur <strong>intern</strong> (kein Internet-Zugang zur Penta-DB)</li>
+        <li>Credentials liegen verschl&uuml;sselt in der Docker-Konfiguration (nicht im Code)</li>
+      </ul>
+    </div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-top:2rem; margin-bottom:1rem;">Was der IT-Dienstleister bereitstellen muss</h4>
+    <ul style="font-size:.9rem; color:var(--gv-text);">
+      <li><input type="checkbox" disabled> IP/Hostname des Penta-Datenbankservers</li>
+      <li><input type="checkbox" disabled> Port (vermutlich 1433)</li>
+      <li><input type="checkbox" disabled> Read-Only Datenbank-User anlegen (nur SELECT-Rechte)</li>
+      <li><input type="checkbox" disabled> Firewall: VM darf intern auf den DB-Server zugreifen</li>
+      <li><input type="checkbox" disabled> Kl&auml;ren: Welche Tabellen/Views werden ben&ouml;tigt? (stimmen wir gemeinsam ab)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 5. Datenbank -->
+<section class="block alt" id="datenbank">
+  <div class="container">
+    <div class="eyebrow">Abschnitt 5</div>
+    <h2 class="section-title">Datenbank</h2>
+    <p class="section-sub">PostgreSQL 16 l&auml;uft als Docker-Container &mdash; Konfiguration und Backup-Strategie.</p>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">PostgreSQL 16 (läuft als Docker-Container)</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Aspekt</th><th>Details</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Version</strong></td><td>PostgreSQL 16 (LTS)</td></tr>
+          <tr><td><strong>Speicherort</strong></td><td>Docker Volume (<code>pgdata</code>), persistiert Neustarts</td></tr>
+          <tr><td><strong>Datenbanken</strong></td><td>Eine pro App (z.B. <code>opos</code>, <code>projektmonitoring</code>, <code>nonconformity</code>)</td></tr>
+          <tr><td><strong>Zugriff</strong></td><td>Nur von anderen Containern auf der VM, nicht von außen</td></tr>
+        </tbody>
+      </table>
+    </div></div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Backup (wichtig!)</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <div class="table-responsive">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Was</th><th>Wie</th><th>Wann</th></tr></thead>
+        <tbody>
+          <tr><td><strong>DB-Dump</strong></td><td><code>docker exec postgres pg_dumpall > backup.sql</code></td><td>Täglich (Cronjob)</td></tr>
+          <tr><td><strong>Volume-Snapshot</strong></td><td>VM-Snapshot oder Docker Volume Backup</td><td>Wöchentlich</td></tr>
+          <tr><td><strong>Aufbewahrung</strong></td><td>Mindestens 7 Tage täglich + 4 Wochen wöchentlich</td><td>&mdash;</td></tr>
+          <tr><td><strong>Backup-Ziel</strong></td><td>Außerhalb der VM (NAS, anderer Server, Cloud)</td><td>&mdash;</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Beispiel-Cronjob</h4>
+    <div class="code-block">
+      <span class="code-label">Cron</span>
+<span class="comment"># /etc/cron.d/db-backup</span>
+0 2 * * * root docker exec postgres pg_dumpall -U postgres | gzip > /backup/db-$(date +\%Y\%m\%d).sql.gz
+<span class="comment"># Alte Backups nach 14 Tagen löschen</span>
+0 3 * * * root find /backup -name "db-*.sql.gz" -mtime +14 -delete
+    </div>
+  </div>
+</section>
+
+<!-- 5. Remote-Zugang -->
+<section class="block" id="remote">
+  <div class="container">
+    <div class="eyebrow">Abschnitt 5</div>
+    <h2 class="section-title">Remote-Zugang für p2cx</h2>
+    <p class="section-sub">p2cx braucht SSH-Zugang zur VM für Ersteinrichtung und Konfiguration, Deployments und Updates, Fehleranalyse bei Problemen sowie Monitoring-Einrichtung.</p>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1.5rem;">Empfehlung: Reverse-SSH-Tunnel</h4>
+    <p style="font-size:.9rem; color:var(--gv-muted); margin-bottom:1.5rem;">Kein Drittanbieter, kein VPN-Client, keine US-Dienste. Die VM baut selbst eine ausgehende Verbindung zum p2cx-Server auf.</p>
+
+    <!-- Empfehlung: Reverse-SSH-Tunnel -->
+    <div class="option-card recommended">
+      <h5>Reverse-SSH-Tunnel<span class="option-badge">Empfohlen</span></h5>
+      <div class="flow-block mb-3" style="font-size:.8rem;">Greif-Velox VM &rarr; ausgehende SSH-Verbindung &rarr; p2cx-Server (EU, IONOS) &larr; p2cx greift zu</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <ul style="font-size:.88rem; margin:0; padding-left:1.2rem; color:var(--gv-muted);">
+            <li><strong>Kein eingehender Port</strong> muss auf der Firewall geöffnet werden</li>
+            <li>Kein VPN-Client, keine Drittanbieter-Software</li>
+            <li>Verbindung ist SSH-verschlüsselt (AES-256)</li>
+            <li>IT-DL kann die Verbindung jederzeit kappen</li>
+            <li>Ermöglicht automatisiertes Deployment per GitHub Actions</li>
+          </ul>
+        </div>
+        <div class="col-md-6">
+          <div style="font-size:.85rem; background:var(--gv-green-soft); border-radius:var(--gv-radius); padding:1rem;">
+            <strong style="color:var(--gv-green-dark);">Warum das sicher ist:</strong>
+            <ul style="margin:.5rem 0 0; padding-left:1.2rem; color:var(--gv-text);">
+              <li>Kein offener Port auf der VM (kein Angriffspunkt)</li>
+              <li>p2cx erreicht nur die VM, nicht das restliche LAN</li>
+              <li>Keine Metadaten bei US-Firmen</li>
+              <li>Key-basierte Authentifizierung (keine Passwörter)</li>
+              <li>Eingeschränkter User (nur Docker + Logs)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key-Austausch -->
+    <div class="gv-card mt-4"><div class="gv-body">
+      <h5 style="font-weight:700; font-size:.95rem; margin-bottom:1rem;">Wer hat welchen Key?</h5>
+      <div class="table-responsive">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Key</th><th>Erstellt von</th><th>Liegt auf</th><th>Zweck</th></tr></thead>
+        <tbody>
+          <tr><td>Tunnel-Key (private)</td><td>IT-DL</td><td>Greif-Velox VM</td><td>VM authentifiziert sich beim p2cx-Server</td></tr>
+          <tr><td>Tunnel-Key (public)</td><td>IT-DL</td><td>p2cx-Server</td><td>p2cx-Server erkennt die VM</td></tr>
+          <tr><td>p2cx-Key (private)</td><td>p2cx</td><td>p2cx-Rechner</td><td>p2cx authentifiziert sich auf der VM</td></tr>
+          <tr><td>p2cx-Key (public)</td><td>p2cx</td><td>Greif-Velox VM</td><td>VM erkennt p2cx</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="font-size:.82rem; color:var(--gv-muted); margin-top:.75rem; margin-bottom:0;"><strong>Kein Private Key verlässt jemals den Rechner auf dem er erstellt wurde.</strong></p>
+    </div></div>
+
+    <!-- GitHub Actions -->
+    <div class="gv-card mt-4"><div class="gv-body">
+      <h5 style="font-weight:700; font-size:.95rem; margin-bottom:1rem;">GitHub Actions: Automatische Deployments</h5>
+      <div class="flow-block mb-3" style="font-size:.78rem;">Code Push &rarr; Tests &rarr; Docker Image bauen &rarr; SSH &uuml;ber Tunnel &rarr; docker pull + restart &rarr; Health-Check</div>
+      <p style="font-size:.88rem; color:var(--gv-muted); margin-bottom:.5rem;">Die VM braucht nur <strong>ausgehenden</strong> Zugang zu:</p>
+      <ul style="font-size:.88rem; padding-left:1.2rem; color:var(--gv-muted); margin-bottom:0;">
+        <li>Port 22 (SSH zum p2cx-Server, für den Tunnel)</li>
+        <li>Port 443 (HTTPS zu ghcr.io, für Docker-Image-Pull)</li>
+      </ul>
+    </div></div>
+
+    <!-- Tunnel Setup -->
+    <div class="code-block mt-4 mb-4">
+      <span class="code-label">systemd Service auf der VM</span>
+<span class="comment"># /etc/systemd/system/p2cx-tunnel.service</span>
+[Unit]
+Description=SSH Tunnel zu p2cx
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/ssh -N -R 2222:localhost:22 \
+  -i /etc/ssh/tunnel_key \
+  -o ServerAliveInterval=30 \
+  -o ServerAliveCountMax=3 \
+  tunnel@p2cx-server-ip
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+    </div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-top:2.5rem; margin-bottom:1.5rem;">Alternative Optionen</h4>
+
+    <!-- Tailscale -->
+    <div class="option-card">
+      <h5>Tailscale (einfach, aber US-Anbieter)</h5>
+      <div class="flow-block mb-3" style="font-size:.8rem;">p2cx &larr; Tailscale-Netzwerk (P2P) &rarr; VM</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <ul style="font-size:.88rem; margin:0; padding-left:1.2rem; color:var(--gv-muted);">
+            <li>Peer-to-Peer VPN, Daten gehen direkt (nicht über USA)</li>
+            <li><strong>Aber:</strong> Koordinations-Server in USA/Kanada (Metadaten)</li>
+            <li>5 Minuten Setup, kostenlos bis 3 Geräte</li>
+          </ul>
+        </div>
+        <div class="col-md-3"><p style="font-size:.85rem; margin:0;"><strong style="color:var(--gv-green-dark);">Vorteil:</strong> Schnellstes Setup</p></div>
+        <div class="col-md-3"><p style="font-size:.85rem; margin:0;"><strong style="color:var(--gv-muted);">Nachteil:</strong> US-Metadaten, Drittanbieter</p></div>
+      </div>
+    </div>
+
+    <!-- VPN -->
+    <div class="option-card">
+      <h5>VPN-Zugang (klassisch)</h5>
+      <div class="flow-block mb-3" style="font-size:.8rem;">p2cx &rarr; VPN &rarr; Firmennetzwerk &rarr; SSH auf VM</div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <ul style="font-size:.88rem; margin:0; padding-left:1.2rem; color:var(--gv-muted);">
+            <li>IT-Dienstleister richtet VPN-Account für p2cx ein</li>
+            <li>Standard bei den meisten Firmen</li>
+          </ul>
+        </div>
+        <div class="col-md-3"><p style="font-size:.85rem; margin:0;"><strong style="color:var(--gv-green-dark);">Vorteil:</strong> IT-DL hat volle Kontrolle</p></div>
+        <div class="col-md-3"><p style="font-size:.85rem; margin:0;"><strong style="color:var(--gv-muted);">Nachteil:</strong> Nicht automatisierbar, kein CI/CD. Oft proprietärer Client + 2FA nötig.</p></div>
+      </div>
+    </div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-top:2.5rem; margin-bottom:1rem;">SSH-Einrichtung auf der VM</h4>
+    <div class="code-block mb-4">
+      <span class="code-label">Shell</span>
+<span class="comment"># Benutzer für p2cx anlegen</span>
+sudo adduser p2cx --disabled-password
+sudo usermod -aG docker p2cx
+
+<span class="comment"># SSH-Key hinterlegen (kein Passwort-Login!)</span>
+sudo mkdir -p /home/p2cx/.ssh
+sudo nano /home/p2cx/.ssh/authorized_keys
+<span class="comment"># &rarr; p2cx liefert den Public Key</span>
+
+<span class="comment"># Passwort-Login deaktivieren (Sicherheit!)</span>
+sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sudo systemctl restart sshd
+    </div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Was p2cx mit dem Zugang macht (und was nicht)</h4>
+    <div class="gv-card"><div class="gv-body p-0">
+      <div class="table-responsive">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Erlaubt</th><th>Nicht erlaubt</th></tr></thead>
+        <tbody>
+          <tr><td>Docker-Container starten/stoppen/aktualisieren</td><td>Netzwerk-Konfiguration ändern</td></tr>
+          <tr><td>Logs lesen</td><td>Andere Server/Dienste im Netzwerk zugreifen</td></tr>
+          <tr><td>Datenbank-Operationen (Migrationen, Backups)</td><td>Firewall-Regeln ändern</td></tr>
+          <tr><td>Monitoring einrichten</td><td>Nutzer-Accounts anlegen/löschen</td></tr>
+          <tr><td>Fehleranalyse und Debugging</td><td>Betriebssystem-Updates (macht IT-DL)</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- 6. Monitoring -->
+<section class="block alt" id="monitoring">
+  <div class="container">
+    <div class="eyebrow">Abschnitt 6</div>
+    <h2 class="section-title">Monitoring</h2>
+    <p class="section-sub">Wer überwacht was &mdash; klare Aufgabenteilung zwischen IT-Dienstleister und p2cx.</p>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Was p2cx überwacht (in den Apps)</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <div class="table-responsive">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Check</th><th>Wie</th><th>Intervall</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Health-Check</strong></td><td>HTTP GET auf <code>/api/health</code> pro App</td><td>Alle 60 Sekunden</td></tr>
+          <tr><td><strong>Erreichbarkeit</strong></td><td>HTTP Status 200? Antwortzeit &lt; 2s?</td><td>Alle 60 Sekunden</td></tr>
+          <tr><td><strong>Error-Rate</strong></td><td>Fehler in der App (DB, API, AI)</td><td>Laufend (App-intern)</td></tr>
+          <tr><td><strong>AI-Kosten</strong></td><td>Token-Verbrauch und Kosten pro App</td><td>Laufend (App-intern)</td></tr>
+          <tr><td><strong>DB-Größe</strong></td><td>Wie voll ist die Datenbank?</td><td>Täglich</td></tr>
+          <tr><td><strong>Disk-Nutzung</strong></td><td>Wie voll ist die VM?</td><td>Alle 5 Minuten</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Wie das Monitoring funktioniert</h4>
+    <div class="flow-block mb-4">
+Apps auf VM &rarr; /api/health &rarr; p2cx Monitoring (myp2cx)
+                                      |
+                                      +-- Dashboard: Grün/Rot pro App
+                                      +-- Alerting: E-Mail bei Ausfall
+                                      +-- Historie: Uptime-Verlauf
+    </div>
+
+    <div class="row g-4 mb-4">
+      <div class="col-md-6">
+        <div class="gv-card h-100"><div class="gv-body">
+          <h5 style="font-weight:700; font-size:.95rem;">Option A: p2cx fragt die VM direkt ab</h5>
+          <p style="font-size:.88rem; color:var(--gv-muted); margin:0;">Braucht VPN/Tailscale. Einfachste Lösung: p2cx ruft <code>/api/health</code> jeder App auf. Ergebnisse landen im myp2cx-Dashboard.</p>
+        </div></div>
+      </div>
+      <div class="col-md-6">
+        <div class="gv-card h-100"><div class="gv-body">
+          <h5 style="font-weight:700; font-size:.95rem;">Option B: VM meldet sich bei p2cx</h5>
+          <p style="font-size:.88rem; color:var(--gv-muted); margin:0;">Kein eingehender Zugang nötig. Kleiner Agent auf der VM schickt Health-Daten an p2cx. Push statt Pull &mdash; funktioniert ohne VPN. VM braucht nur ausgehenden HTTPS-Zugang.</p>
+        </div></div>
+      </div>
+    </div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Was der IT-Dienstleister überwacht (Infrastruktur)</h4>
+    <div class="gv-card mb-4"><div class="gv-body p-0">
+      <div class="table-responsive">
+      <table class="table-gv mb-0">
+        <thead><tr><th>Check</th><th>Wie</th><th>Verantwortung</th></tr></thead>
+        <tbody>
+          <tr><td><strong>VM läuft</strong></td><td>Hypervisor-Monitoring (VMware, Hyper-V, Proxmox)</td><td>IT-DL</td></tr>
+          <tr><td><strong>Disk voll</strong></td><td>OS-Level Monitoring</td><td>IT-DL</td></tr>
+          <tr><td><strong>Netzwerk</strong></td><td>Ping, Erreichbarkeit im LAN</td><td>IT-DL</td></tr>
+          <tr><td><strong>OS-Updates</strong></td><td>Regelmäßig Sicherheitspatches einspielen</td><td>IT-DL</td></tr>
+          <tr><td><strong>Docker läuft</strong></td><td><code>systemctl status docker</code></td><td>IT-DL</td></tr>
+          <tr><td><strong>Backup erfolgreich</strong></td><td>Backup-Job prüfen</td><td>IT-DL</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div></div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1.5rem;">Aufgabenteilung: IT-Dienstleister vs. p2cx</h4>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="diagram-col it-dl">
+          <h4>IT-Dienstleister</h4>
+          <div class="diagram-item"><div class="diagram-dot"></div> VM läuft?</div>
+          <div class="diagram-item"><div class="diagram-dot"></div> Netzwerk OK?</div>
+          <div class="diagram-item"><div class="diagram-dot"></div> Disk frei?</div>
+          <div class="diagram-item"><div class="diagram-dot"></div> Backup läuft?</div>
+          <div class="diagram-item"><div class="diagram-dot"></div> OS-Updates?</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="diagram-col p2cx">
+          <h4>p2cx</h4>
+          <div class="diagram-item"><div class="diagram-dot"></div> Apps laufen?</div>
+          <div class="diagram-item"><div class="diagram-dot"></div> Keine Errors?</div>
+          <div class="diagram-item"><div class="diagram-dot"></div> Performance OK?</div>
+          <div class="diagram-item"><div class="diagram-dot"></div> AI-Kosten im Rahmen?</div>
+          <div class="diagram-item"><div class="diagram-dot"></div> Security-Patches App?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. Wartung -->
+<section class="block" id="wartung">
+  <div class="container">
+    <div class="eyebrow">Abschnitt 7</div>
+    <h2 class="section-title">Wartung und Updates</h2>
+    <p class="section-sub">OS-Updates durch den IT-Dienstleister, App-Updates durch p2cx &mdash; mit Qualitätssicherung.</p>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">OS-Updates (IT-Dienstleister)</h4>
+    <div class="code-block mb-4">
+      <span class="code-label">Shell</span>
+<span class="comment"># Regelmäßig (monatlich oder häufiger):</span>
+sudo apt update && sudo apt upgrade -y
+
+<span class="comment"># Docker aktualisieren:</span>
+sudo apt install --only-upgrade docker-ce docker-ce-cli
+    </div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">App-Updates (p2cx oder automatisch)</h4>
+    <div class="code-block mb-4">
+      <span class="code-label">Shell</span>
+<span class="comment"># Manuell (p2cx per SSH):</span>
+cd /opt/greifvelox
+docker compose pull
+docker compose up -d
+
+<span class="comment"># Oder automatisch per GitHub Actions:</span>
+<span class="comment"># Push auf main &rarr; neues Image wird gebaut &rarr; Webhook an VM &rarr; auto-update</span>
+    </div>
+
+    <h4 style="font-weight:700; font-size:1.1rem; margin-bottom:1rem;">Update-Ablauf mit Qualitätssicherung</h4>
+    <div class="flow-block">
+Code-Änderung &rarr; Tests (automatisch) &rarr; Docker Image bauen
+       &rarr; Image auf VM ziehen &rarr; Health-Check &rarr; Fertig
+       &rarr; Health-Check FEHLGESCHLAGEN &rarr; Rollback auf vorheriges Image
+    </div>
+  </div>
+</section>
+
+<!-- 8. Checkliste -->
+<section class="block alt" id="checkliste">
+  <div class="container">
+    <div class="eyebrow">Abschnitt 8</div>
+    <h2 class="section-title">Checkliste für den IT-Dienstleister</h2>
+    <p class="section-sub">Schritt für Schritt &mdash; was vor und nach der Einrichtung zu tun ist.</p>
+
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="gv-card h-100"><div class="gv-body">
+          <h5 style="font-weight:700; font-size:1rem; margin-bottom:1.25rem; color:var(--gv-green-dark);">Vor dem ersten Termin mit p2cx</h5>
+          <ul class="checklist">
+            <li><input type="checkbox" disabled> VM bereitstellen (Ubuntu 24.04 LTS, 4 vCPU, 8 GB RAM, 80 GB SSD)</li>
+            <li><input type="checkbox" disabled> SSH-Zugang einrichten (Key-basiert, Benutzer <code>p2cx</code>)</li>
+            <li><input type="checkbox" disabled> Docker + Docker Compose installieren</li>
+            <li><input type="checkbox" disabled> Ausgehenden HTTPS-Zugang (Port 443) erlauben</li>
+            <li><input type="checkbox" disabled> Ausgehenden SSH-Zugang (Port 22) zum p2cx-Server erlauben</li>
+            <li><input type="checkbox" disabled> SSH-Tunnel-Key generieren und Public Key an p2cx übergeben</li>
+            <li><input type="checkbox" disabled> Tunnel-Service einrichten (systemd, siehe Abschnitt 5)</li>
+            <li><input type="checkbox" disabled> Internes DNS einrichten (optional, aber empfohlen)</li>
+            <li><input type="checkbox" disabled> Backup-Strategie festlegen (Ziel, Frequenz, Aufbewahrung)</li>
+            <li><input type="checkbox" disabled> Ansprechpartner benennen (wer ist erreichbar bei Fragen?)</li>
+          </ul>
+        </div></div>
+      </div>
+      <div class="col-lg-6">
+        <div class="gv-card h-100"><div class="gv-body">
+          <h5 style="font-weight:700; font-size:1rem; margin-bottom:1.25rem; color:var(--gv-green-dark);">Nach der Einrichtung durch p2cx</h5>
+          <ul class="checklist">
+            <li><input type="checkbox" disabled> Docker-Container laufen (<code>docker ps</code> zeigt alle Apps)</li>
+            <li><input type="checkbox" disabled> Apps erreichbar im Browser (intern)</li>
+            <li><input type="checkbox" disabled> Health-Checks grün (<code>curl http://localhost:3001/api/health</code>)</li>
+            <li><input type="checkbox" disabled> Backup-Cronjob eingerichtet und getestet</li>
+            <li><input type="checkbox" disabled> Monitoring-Zugang für p2cx funktioniert</li>
+            <li><input type="checkbox" disabled> SSL-Zertifikate installiert (HTTPS)</li>
+            <li><input type="checkbox" disabled> Dokumentation übergeben (Ports, Zugänge, Passwörter)</li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9. FAQ -->
+<section class="block" id="faq">
+  <div class="container">
+    <div class="eyebrow">Abschnitt 9</div>
+    <h2 class="section-title">Häufige Fragen der IT</h2>
+    <p class="section-sub">Antworten auf die typischen Rückfragen von IT-Dienstleistern.</p>
+
+    <div class="accordion accordion-gv" id="faqAccordion">
+
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">&bdquo;Muss das Linux sein?&ldquo;</button></h2>
+        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Ja &mdash; Node.js und Docker laufen am besten und sichersten auf Linux. Aber die VM kann auf einem Windows-Hypervisor laufen (Hyper-V, VMware). Nur das Gastbetriebssystem sollte Linux sein.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">&bdquo;Können wir statt Docker direkt installieren?&ldquo;</button></h2>
+        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Technisch ja, aber wir empfehlen Docker weil Updates und Rollbacks deutlich einfacher sind. Ohne Docker müssen Node.js, npm und PostgreSQL manuell gewartet werden.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">&bdquo;Braucht die VM Internet-Zugang?&ldquo;</button></h2>
+        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Ja, ausgehend (HTTPS) &mdash; für Docker-Image-Updates und die AI-API. Eingehend: Nein (nur intern im LAN erreichbar).</div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">&bdquo;Was passiert wenn die VM ausfällt?&ldquo;</button></h2>
+        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Die Apps sind nicht erreichbar bis die VM wieder läuft. Docker-Container starten automatisch beim VM-Neustart (<code>restart: always</code>). Daten gehen nicht verloren (Docker Volumes + Backups).</div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">&bdquo;Wie groß werden die Docker-Images?&ldquo;</button></h2>
+        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Pro App ca. 200&ndash;400 MB. PostgreSQL ca. 400 MB. nginx ca. 40 MB. Gesamt: ~2 GB für 3 Apps &mdash; kein Problem für 80 GB Disk.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">&bdquo;Brauchen wir Java?&ldquo;</button></h2>
+        <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Nein. Der Stack ist Node.js (JavaScript/TypeScript). Kein Java, kein Tomcat, kein Application Server. Deutlich leichtgewichtiger.</div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">&bdquo;Können die Mitarbeiter die Apps vom Handy nutzen?&ldquo;</button></h2>
+        <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Ja &mdash; die Apps sind Web-Applikationen (responsive). Jedes Gerät im Firmennetzwerk (oder VPN) mit einem Browser kann darauf zugreifen.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Kontakt -->
+<section class="block alt" id="kontakt">
+  <div class="container">
+    <div class="eyebrow">Kontakt</div>
+    <h2 class="section-title">Fragen?</h2>
+    <div class="gv-card" style="max-width:480px;">
+      <div class="gv-body">
+        <p style="font-size:1rem; font-weight:600; margin-bottom:.5rem;">Hauke Gastmeyer</p>
+        <p style="font-size:.9rem; color:var(--gv-muted); margin-bottom:.25rem;">p2cx GmbH</p>
+        <p style="font-size:.9rem; margin:0;"><a href="mailto:hauke@p2cx.de">hauke@p2cx.de</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <div class="brand">GREIF<span>-VELOX</span> &times; p2cx</div>
+    <div style="font-size:.8rem; color:var(--gv-muted);">Stand: 2026-05-01</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
