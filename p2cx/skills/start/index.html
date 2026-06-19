@@ -21,7 +21,9 @@
   .nav-p2cx .brand{ font-weight:800; font-size:1.15rem; } .nav-p2cx .brand span{ color:var(--p2cx-gold); }
   .nav-p2cx a.nav-link{ color:var(--p2cx-muted); font-size:.85rem; padding:.35rem .75rem; border-radius:999px; }
   .nav-p2cx a.nav-link:hover{ color:var(--p2cx-text); background:#fff; }
-  .p2cx-card{ background:#fff; border:1px solid var(--p2cx-border); border-radius:var(--p2cx-radius); box-shadow:var(--p2cx-shadow); height:100%; transition:all .2s ease; }
+  .p2cx-card{ background:#fff; border:1px solid var(--p2cx-border); border-radius:var(--p2cx-radius); box-shadow:var(--p2cx-shadow); transition:all .2s ease; }
+  /* Karten in Gleich-Höhe-Grids stretchen; einzeln/gestapelt natürliche Höhe (kein Überlappen) */
+  .row.eqh > [class*="col"] > .p2cx-card{ height:100%; }
   .p2cx-card:hover{ transform:translateY(-2px); box-shadow:var(--p2cx-shadow-hover); }
   .p2cx-body{ padding:1.5rem; }
   a{ color:var(--p2cx-gold); text-decoration:none; } a:hover{ text-decoration:underline; }
@@ -77,7 +79,7 @@
   <div class="container">
     <div class="section-title">Was du brauchst — im Überblick</div>
     <p class="section-sub">Vier Programme auf deinem Rechner, zwei Anmeldungen, zwei Zugänge von Hauke. Die Details mit Befehlen kommen direkt darunter.</p>
-    <div class="row g-3">
+    <div class="row g-3 eqh">
       <div class="col-md-6 col-lg-3"><div class="p2cx-card"><div class="p2cx-body">
         <div class="ico mb-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 17V7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10M3 20h18"/></svg></div>
         <h6 class="fw-bold mb-1">Node.js + Git</h6>
